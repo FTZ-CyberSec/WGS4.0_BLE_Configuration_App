@@ -9,6 +9,7 @@
 
 import sys
 import asyncio
+import string
 from asyncqt import QEventLoop
 from bleak import BleakScanner, BleakClient, discover
 from bleak.backends.device import BLEDevice
@@ -22,7 +23,7 @@ import time
 import wgs_lpp_parser
 
 
-class MyTable():
+class MyTable(QtWidgets.QTableWidget):
 	def __init__(self, windowObject, objectName):
 		self.table = windowObject.findChild(QtWidgets.QTableWidget, objectName)
 		self.tableRowCount = 0
@@ -55,6 +56,10 @@ class MyTable():
 		self.tableRowCount = 0
 		self.updateRowCount()
 	
+	#def currentRow(self):
+	#	row = self.table.currentRow()
+	#	return row
+	
 
 
 class BLE_Device():
@@ -84,6 +89,10 @@ class Ui(QtWidgets.QMainWindow):
 			QtWidgets.QPushButton, GuiTags.SCAN_BUTTON)
 		self.scanButton.clicked.connect(self.startScan)
 
+		self.connectButton = self.findChild(
+			QtWidgets.QPushButton, GuiTags.CONNECT_BUTTON)
+		self.connectButton.clicked.connect(self.startConnect)
+
 		self.scanProgressBar = self.findChild(
 			QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
 
@@ -106,6 +115,11 @@ class Ui(QtWidgets.QMainWindow):
 		self.configAppButton.clicked.connect(
 			lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.APP_TYPE))
 
+		self.configDevEUIButton = self.findChild(
+			QtWidgets.QPushButton, GuiTags.CONFIG_BUTTON_DEVEUI)
+		self.configDevEUIButton.clicked.connect(
+			lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.DEV_EUI))
+
 		self.configMeasureIntervalButton = self.findChild(
 			QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_MEASURE_INTERVAL)
 		self.configMeasureIntervalButton.clicked.connect(
@@ -115,9 +129,10 @@ class Ui(QtWidgets.QMainWindow):
 			QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_APP_KEY)
 		self.configAppKeyButton.clicked.connect(
 			lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.APP_KEY))
+
 		self.configAppKeyField = self.findChild(
-			QtWidgets.QTextEdit, GuiTags.CONFIG_PROGRAM_TEXT_FIELD_APP_KEY)
-		self.configAppKeyField.textChanged.connect(self.trimLoRaAppKeyInput)
+			QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY)
+		#self.configAppKeyField.textChanged.connect(self.trimLoRaAppKeyInput)
 
 		self.configSensorsButton = self.findChild(
 			QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_SENSORS)
@@ -148,17 +163,41 @@ class Ui(QtWidgets.QMainWindow):
 				data = convert_int_in_bytes(int(time.time()))
 				data.insert(0, GuiTags.BLE_CONFIG_PARAM.TIME.value)
 				asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID,data, disconnect=False), loop=self.loop)
-				
-			  
+			######Config Application Type######
+			elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.APP_TYPE:
+				print('Set Application Type')	
+				data = self.configListApp.currentRow()
+				asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID,data, disconnect=False), loop=self.loop)
+			#Config Measure Interval
 			elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.MEASURE_INTERVAL:
 				try:
 					measureIntervall = int(self.findChild(
-						QtWidgets.QTextEdit, GuiTags.CONFIG_PROGRAM_TEXT_FIELD_MEASURE_INTERVAL).toPlainText())
+						QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_MEASURE_INTERVAL).toPlainText())
 					print("Measure Intervall", measureIntervall)
 				except:
 					print("Illegal Input")
+			# Config LoRaWAN APPKey
 			elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.APP_KEY:
-				print("hallo")
+				rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY).toPlainText()
+				data = [int(rawdata[i:i+2],16) for i in range(0,len(rawdata),2)]
+				if len(data)==16:
+					data.insert(0, GuiTags.BLE_CONFIG_PARAM.APP_KEY.value)
+					asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID,data), loop=self.loop)
+					print('Der App Key wurde übertragen')
+				else:
+					print('Der eingegebene App Key ist nicht zulässig')
+			elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.SENSOR_TYPE:
+				pass
+			elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.DEV_EUI:
+				rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
+				data = [int(rawdata[i:i+2],16) for i in range(0,len(rawdata),2)]
+				if len(data)==8:
+					data.insert(0, GuiTags.BLE_CONFIG_PARAM.DEV_EUI.value)
+					asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID,data), loop=self.loop)
+					print('Die Dev EUI wurde übertragen')
+				else:
+					print('Die eingegebene EUI ist nicht zulässig')
+				
 
 	def startScan(self):
 		self.ScanButtonPressed = True
@@ -167,7 +206,7 @@ class Ui(QtWidgets.QMainWindow):
 		else:
 
 			asyncio.ensure_future(self.progressBar(), loop=self.loop)
-			asyncio.ensure_future(self.startBleScanAndConnect(), loop=self.loop)
+			asyncio.ensure_future(self.startBleScan(), loop=self.loop)
 		# self.scanTable.addRowInToTable(row_test)
 
 	async def writeChars(self, uuid,data,disconnect = False):
@@ -215,7 +254,7 @@ class Ui(QtWidgets.QMainWindow):
 
 			self.scanProgressBar.setValue(count)
 
-	async def startBleScanAndConnect(self):
+	async def startBleScan(self):
 		print('Start Scan')
 		scanner = BleakScanner()
 		await scanner.start()
@@ -228,31 +267,34 @@ class Ui(QtWidgets.QMainWindow):
 			new_row[1] = d.name
 			new_row[2] = d.rssi
 			self.scanTable.addRowInToTable(new_row)
-			if d.name == GuiTags.DEVICE_NAME:
-				client = BleakClient(d.address)
-				try:
-					await client.connect()
-				except Exception as e:
-					self.setConnectionStatusDisconnected()
-					self.scanProgressBar.setValue(0)
 
-				finally:
-					self.scanProgressBar.setValue(100)
+	def startConnect(self):
+		print('ROW: ' + str(self.scanTable.currentRow()))
+		'''if d.name == GuiTags.DEVICE_NAME:
+			client = BleakClient(d.address)
+			try:
+				await client.connect()
+			except Exception as e:
+				self.setConnectionStatusDisconnected()
+				self.scanProgressBar.setValue(0)
 
-					svcs = await client.get_services()
-					print("Services:")
-					for service in svcs:						
-						print(service)
-						for c in service.characteristics:
-							if c.handle == 22:
-								GuiTags.WGS_CONFIG_UUID = c.uuid
-							if c.handle == 25:
-								GuiTags.WGS_DATA_UUID = c.uuid
+			finally:
+				self.scanProgressBar.setValue(100)
+
+				svcs = await client.get_services()
+				print("Services:")
+				for service in svcs:						
+					print(service)
+					for c in service.characteristics:
+						if c.handle == 22:
+							GuiTags.WGS_CONFIG_UUID = c.uuid
+						if c.handle == 25:
+							GuiTags.WGS_DATA_UUID = c.uuid
 
 
-					self.setConnectionStatusConnected(client)
-					
-
+				self.setConnectionStatusConnected(client)
+		'''	
+	'''
 	def trimLoRaAppKeyInput(self):
 		textStriped = self.configAppKeyField.toPlainText().replace(" ", "")
 		text = self.configAppKeyField.toPlainText()
@@ -275,6 +317,7 @@ class Ui(QtWidgets.QMainWindow):
 			cursor.movePosition(QtGui.QTextCursor.End)
 			self.configAppKeyField.setTextCursor(cursor)
 		self.configAppKeyField.textChanged.connect(self.trimLoRaAppKeyInput)
+	'''
 
 	def setConnectionStatusConnected(self, client):
 		self.bleDevice.client = client

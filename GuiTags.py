@@ -7,6 +7,7 @@ CLEAN_DATA_TABLE_NUTTON = 'cleanEggDataTableButton'
 
 SCAN_TABLE = 'scanTable'
 SCAN_BUTTON = 'scanButton'
+CONNECT_BUTTON = 'connectButton'
 CONNECTION_STATUS_LABEL = 'connectionStatusLabel'
 SCAN_PROGRESS_BAR = 'scanProgressBar'
 
@@ -19,20 +20,19 @@ CONNECTION_CHOICE_DATA = 'choiceConnectionData'
 CONNECTION_CHOICE_JUST_SCAN = 'choiceJustScan'
 
 CONFIG_LIST_APP = 'configListApp'
+CONFIG_FIELD_MEASURE_INTERVAL = 'configFieldMeasureTime'
+CONFIG_FIELD_DEVEUI = 'configFieldDevEUI'
+CONFIG_FIELD_APP_KEY = 'configFieldAppKey'
+CONFIG_LIST_SENSORS = 'configListSensors'
+
+#BUTTONS
 CONFIG_PROGRAM_BUTTON_APP = 'configProgramButtonApp'
-
-CONFIG_PROGRAM_BUTTON_MEASURE_INTERVAL = 'configProgramButtonMeasureInterval'
-CONFIG_PROGRAM_TEXT_FIELD_MEASURE_INTERVAL = 'configFieldMeasureTime'
-
-CONFIG_PROGRAM_BUTTON_APP_KEY = 'configProgramButtonAppKey'
-CONFIG_PROGRAM_TEXT_FIELD_APP_KEY = 'configFieldAppKey'
-
 CONFIG_PROGRAM_BUTTON_SENSORS = 'configProgramButtonSensors'
-
+CONFIG_PROGRAM_BUTTON_MEASURE_INTERVAL = 'configProgramButtonMeasureInterval'
+CONFIG_PROGRAM_BUTTON_APP_KEY = 'configProgramButtonAppKey'
+CONFIG_BUTTON_DEVEUI = 'configButtonDevEUI'
 CONFIG_PROGRAM_BUTTON_START = 'configProgramButtonStart'
-
 CONFIG_PROGRAM_BUTTON_RESET = 'configProgramButtonReset'
-
 CONFIG_PROGRAM_BUTTON_TIME = 'configProgramButtonTime'
 
 
@@ -51,8 +51,8 @@ class BLE_CONFIG_PARAM(Enum):
 	START = 0x06
 	APP_TYPE = 0x07
 	TIME = 0x08
-	
-ALLOWED_CHAR_APP_KEY = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','A','B','C','D','E','F']
+	DEV_EUI = 0x09
+
 
 MAX_LORAWAN_KEY_LEN = 16 *2
 	
