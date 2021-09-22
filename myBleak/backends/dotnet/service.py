@@ -1,7 +1,7 @@
 from typing import List
 
-from bleak.backends.service import BleakGATTService
-from bleak.backends.dotnet.characteristic import BleakGATTCharacteristicDotNet
+from myBleak.backends.service import BleakGATTService
+from myBleak.backends.dotnet.characteristic import BleakGATTCharacteristicDotNet
 
 # Import of BleakBridge to enable loading of winrt bindings
 from BleakBridge import Bridge  # noqa: F401

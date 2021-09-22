@@ -1,9 +1,9 @@
 from uuid import UUID
 from typing import Union, List
 
-from bleak.backends.bluezdbus.utils import extract_service_handle_from_path
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.bluezdbus.utils import extract_service_handle_from_path
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.descriptor import BleakGATTDescriptor
 
 
 _GattCharacteristicsFlagsEnum = {

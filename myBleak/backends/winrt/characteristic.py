@@ -2,9 +2,9 @@
 from uuid import UUID
 from typing import List, Union
 
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.descriptor import BleakGATTDescriptor
-from bleak.backends.winrt.descriptor import BleakGATTDescriptorWinRT
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.winrt.descriptor import BleakGATTDescriptorWinRT
 
 from winrt.windows.devices.bluetooth.genericattributeprofile import (
     GattCharacteristicProperties,

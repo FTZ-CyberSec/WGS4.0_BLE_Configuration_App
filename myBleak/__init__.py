@@ -13,8 +13,8 @@ import platform
 import subprocess
 import asyncio
 
-from bleak.__version__ import __version__  # noqa
-from bleak.exc import BleakError
+from myBleak.__version__ import __version__  # noqa
+from myBleak.exc import BleakError
 
 _on_rtd = os.environ.get("READTHEDOCS") == "True"
 _on_ci = "CI" in os.environ
@@ -44,10 +44,10 @@ if platform.system() == "Linux":
                 "Bleak requires BlueZ >= 5.43. Found version {0} installed.".format(out)
             )
 
-    from bleak.backends.bluezdbus.scanner import (
+    from myBleak.backends.bluezdbus.scanner import (
         BleakScannerBlueZDBus as BleakScanner,
     )  # noqa: F401
-    from bleak.backends.bluezdbus.client import (
+    from myBleak.backends.bluezdbus.client import (
         BleakClientBlueZDBus as BleakClient,
     )  # noqa: F401
 elif platform.system() == "Darwin":
@@ -56,10 +56,10 @@ elif platform.system() == "Darwin":
     except Exception as ex:
         raise BleakError("Bleak requires the CoreBluetooth Framework") from ex
 
-    from bleak.backends.corebluetooth.scanner import (
+    from myBleak.backends.corebluetooth.scanner import (
         BleakScannerCoreBluetooth as BleakScanner,
     )  # noqa: F401
-    from bleak.backends.corebluetooth.client import (
+    from myBleak.backends.corebluetooth.client import (
         BleakClientCoreBluetooth as BleakClient,
     )  # noqa: F401
 
@@ -81,17 +81,17 @@ elif platform.system() == "Windows":
     # If the winrt package is installed, assume that the user has opted to use that backend
     # instead of the pythonnet/BleakBridge implementation.
     try:
-        from bleak.backends.winrt.scanner import (
+        from myBleak.backends.winrt.scanner import (
             BleakScannerWinRT as BleakScanner,
         )  # noqa: F401
-        from bleak.backends.winrt.client import (
+        from myBleak.backends.winrt.client import (
             BleakClientWinRT as BleakClient,
         )  # noqa: F401
     except ImportError:
-        from bleak.backends.dotnet.scanner import (
+        from myBleak.backends.dotnet.scanner import (
             BleakScannerDotNet as BleakScanner,
         )  # noqa: F401
-        from bleak.backends.dotnet.client import (
+        from myBleak.backends.dotnet.client import (
             BleakClientDotNet as BleakClient,
         )  # noqa: F401
 

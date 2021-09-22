@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.descriptor import BleakGATTDescriptor
 
 from winrt.windows.devices.bluetooth.genericattributeprofile import GattDescriptor
 

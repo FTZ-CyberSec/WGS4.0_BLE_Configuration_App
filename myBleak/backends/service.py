@@ -9,10 +9,10 @@ import abc
 from uuid import UUID
 from typing import Dict, List, Optional, Union, Iterator
 
-from bleak import BleakError
-from bleak.uuids import uuidstr_to_str
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.descriptor import BleakGATTDescriptor
+from myBleak import BleakError
+from myBleak.uuids import uuidstr_to_str
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.descriptor import BleakGATTDescriptor
 
 
 class BleakGATTService(abc.ABC):

@@ -4,8 +4,8 @@ import pathlib
 from typing import Callable, List
 from uuid import UUID
 
-from bleak.backends.device import BLEDevice
-from bleak.backends.scanner import BaseBleakScanner, AdvertisementData
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.scanner import BaseBleakScanner, AdvertisementData
 
 from winrt.windows.devices.bluetooth.advertisement import (
     BluetoothLEScanningMode,

@@ -11,21 +11,21 @@ import uuid
 from functools import wraps
 from typing import Callable, Any, List, Union
 
-from bleak.backends.device import BLEDevice
-from bleak.backends.dotnet.scanner import BleakScannerDotNet
-from bleak.exc import BleakError, BleakDotNetTaskError, CONTROLLER_ERROR_CODES
-from bleak.backends.client import BaseBleakClient
-from bleak.backends.dotnet.utils import (
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.dotnet.scanner import BleakScannerDotNet
+from myBleak.exc import BleakError, BleakDotNetTaskError, CONTROLLER_ERROR_CODES
+from myBleak.backends.client import BaseBleakClient
+from myBleak.backends.dotnet.utils import (
     BleakDataReader,
     BleakDataWriter,
     wrap_IAsyncOperation,
 )
 
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.service import BleakGATTServiceCollection
-from bleak.backends.dotnet.service import BleakGATTServiceDotNet
-from bleak.backends.dotnet.characteristic import BleakGATTCharacteristicDotNet
-from bleak.backends.dotnet.descriptor import BleakGATTDescriptorDotNet
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.service import BleakGATTServiceCollection
+from myBleak.backends.dotnet.service import BleakGATTServiceDotNet
+from myBleak.backends.dotnet.characteristic import BleakGATTCharacteristicDotNet
+from myBleak.backends.dotnet.descriptor import BleakGATTDescriptorDotNet
 
 
 # CLR imports

@@ -1,4 +1,4 @@
-from bleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.descriptor import BleakGATTDescriptor
 
 
 class BleakGATTDescriptorBlueZDBus(BleakGATTDescriptor):

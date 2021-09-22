@@ -6,8 +6,8 @@ from dbus_next.constants import MessageType
 from dbus_next.message import Message
 from dbus_next.signature import Variant
 
-from bleak import BleakError
-from bleak.exc import BleakDBusError
+from myBleak import BleakError
+from myBleak.exc import BleakDBusError
 
 _mac_address_regex = re.compile("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")
 

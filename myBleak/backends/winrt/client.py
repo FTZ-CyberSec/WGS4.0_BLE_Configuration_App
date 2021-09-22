@@ -19,16 +19,16 @@ from winrt.windows.devices.enumeration import (
 )
 from winrt.windows.security.cryptography import CryptographicBuffer
 
-from bleak.backends.device import BLEDevice
-from bleak.backends.winrt.scanner import BleakScannerWinRT
-from bleak.exc import BleakError, BleakDotNetTaskError, CONTROLLER_ERROR_CODES
-from bleak.backends.client import BaseBleakClient
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.winrt.scanner import BleakScannerWinRT
+from myBleak.exc import BleakError, BleakDotNetTaskError, CONTROLLER_ERROR_CODES
+from myBleak.backends.client import BaseBleakClient
 
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.service import BleakGATTServiceCollection
-from bleak.backends.winrt.service import BleakGATTServiceWinRT
-from bleak.backends.winrt.characteristic import BleakGATTCharacteristicWinRT
-from bleak.backends.winrt.descriptor import BleakGATTDescriptorWinRT
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.service import BleakGATTServiceCollection
+from myBleak.backends.winrt.service import BleakGATTServiceWinRT
+from myBleak.backends.winrt.characteristic import BleakGATTCharacteristicWinRT
+from myBleak.backends.winrt.descriptor import BleakGATTDescriptorWinRT
 
 
 # Import of RT components needed.

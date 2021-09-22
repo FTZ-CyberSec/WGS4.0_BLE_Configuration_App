@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.descriptor import BleakGATTDescriptor
 
 # Import of BleakBridge to enable loading of winrt bindings
 from BleakBridge import Bridge  # noqa: F401

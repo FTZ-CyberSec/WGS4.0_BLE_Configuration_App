@@ -9,9 +9,9 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from CoreBluetooth import CBCharacteristic
 
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.corebluetooth.descriptor import BleakGATTDescriptorCoreBluetooth
-from bleak.backends.corebluetooth.utils import cb_uuid_to_str
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.corebluetooth.descriptor import BleakGATTDescriptorCoreBluetooth
+from myBleak.backends.corebluetooth.utils import cb_uuid_to_str
 
 
 class CBCharacteristicProperties(Enum):

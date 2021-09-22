@@ -21,7 +21,7 @@ from CoreBluetooth import (
     CBCharacteristicWriteWithResponse,
 )
 
-from bleak.exc import BleakError
+from myBleak.exc import BleakError
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

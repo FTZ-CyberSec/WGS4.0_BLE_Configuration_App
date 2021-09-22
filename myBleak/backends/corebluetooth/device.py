@@ -2,8 +2,8 @@
 
 from Foundation import NSDictionary, NSNumber
 
-from bleak.backends.corebluetooth.utils import cb_uuid_to_str
-from bleak.backends.device import BLEDevice
+from myBleak.backends.corebluetooth.utils import cb_uuid_to_str
+from myBleak.backends.device import BLEDevice
 
 
 class BLEDeviceCoreBluetooth(BLEDevice):

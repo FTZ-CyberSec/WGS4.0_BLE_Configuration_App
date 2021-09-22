@@ -6,8 +6,8 @@ Created on 2019-06-28 by kevincar <kevincarrolldavis@gmail.com>
 """
 from CoreBluetooth import CBDescriptor
 
-from bleak.backends.corebluetooth.utils import cb_uuid_to_str
-from bleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.corebluetooth.utils import cb_uuid_to_str
+from myBleak.backends.descriptor import BleakGATTDescriptor
 
 
 class BleakGATTDescriptorCoreBluetooth(BleakGATTDescriptor):

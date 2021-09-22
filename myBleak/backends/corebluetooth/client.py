@@ -17,21 +17,21 @@ from CoreBluetooth import (
     CBPeripheralStateConnected,
 )
 
-from bleak.backends.client import BaseBleakClient
-from bleak.backends.corebluetooth.CentralManagerDelegate import CentralManagerDelegate
-from bleak.backends.corebluetooth.characteristic import (
+from myBleak.backends.client import BaseBleakClient
+from myBleak.backends.corebluetooth.CentralManagerDelegate import CentralManagerDelegate
+from myBleak.backends.corebluetooth.characteristic import (
     BleakGATTCharacteristicCoreBluetooth,
 )
-from bleak.backends.corebluetooth.descriptor import BleakGATTDescriptorCoreBluetooth
-from bleak.backends.corebluetooth.PeripheralDelegate import PeripheralDelegate
-from bleak.backends.corebluetooth.scanner import BleakScannerCoreBluetooth
-from bleak.backends.corebluetooth.service import BleakGATTServiceCoreBluetooth
-from bleak.backends.corebluetooth.utils import cb_uuid_to_str
-from bleak.backends.device import BLEDevice
-from bleak.backends.service import BleakGATTServiceCollection
-from bleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.corebluetooth.descriptor import BleakGATTDescriptorCoreBluetooth
+from myBleak.backends.corebluetooth.PeripheralDelegate import PeripheralDelegate
+from myBleak.backends.corebluetooth.scanner import BleakScannerCoreBluetooth
+from myBleak.backends.corebluetooth.service import BleakGATTServiceCoreBluetooth
+from myBleak.backends.corebluetooth.utils import cb_uuid_to_str
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.service import BleakGATTServiceCollection
+from myBleak.backends.characteristic import BleakGATTCharacteristic
 
-from bleak.exc import BleakError
+from myBleak.exc import BleakError
 
 logger = logging.getLogger(__name__)
 

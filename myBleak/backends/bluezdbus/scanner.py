@@ -6,15 +6,15 @@ from dbus_next.constants import BusType, MessageType
 from dbus_next.message import Message
 from dbus_next.signature import Variant
 
-from bleak.backends.bluezdbus import defs
-from bleak.backends.bluezdbus.signals import MatchRules, add_match, remove_match
-from bleak.backends.bluezdbus.utils import (
+from myBleak.backends.bluezdbus import defs
+from myBleak.backends.bluezdbus.signals import MatchRules, add_match, remove_match
+from myBleak.backends.bluezdbus.utils import (
     assert_reply,
     unpack_variants,
     validate_mac_address,
 )
-from bleak.backends.device import BLEDevice
-from bleak.backends.scanner import BaseBleakScanner, AdvertisementData
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.scanner import BaseBleakScanner, AdvertisementData
 
 logger = logging.getLogger(__name__)
 

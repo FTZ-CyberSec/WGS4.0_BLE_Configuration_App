@@ -17,21 +17,21 @@ from dbus_next.constants import BusType, ErrorType, MessageType
 from dbus_next.message import Message
 from dbus_next.signature import Variant
 
-from bleak.backends.bluezdbus import defs
-from bleak.backends.bluezdbus.characteristic import BleakGATTCharacteristicBlueZDBus
-from bleak.backends.bluezdbus.descriptor import BleakGATTDescriptorBlueZDBus
-from bleak.backends.bluezdbus.scanner import BleakScannerBlueZDBus
-from bleak.backends.bluezdbus.service import BleakGATTServiceBlueZDBus
-from bleak.backends.bluezdbus.signals import MatchRules, add_match, remove_match
-from bleak.backends.bluezdbus.utils import (
+from myBleak.backends.bluezdbus import defs
+from myBleak.backends.bluezdbus.characteristic import BleakGATTCharacteristicBlueZDBus
+from myBleak.backends.bluezdbus.descriptor import BleakGATTDescriptorBlueZDBus
+from myBleak.backends.bluezdbus.scanner import BleakScannerBlueZDBus
+from myBleak.backends.bluezdbus.service import BleakGATTServiceBlueZDBus
+from myBleak.backends.bluezdbus.signals import MatchRules, add_match, remove_match
+from myBleak.backends.bluezdbus.utils import (
     assert_reply,
     extract_service_handle_from_path,
     unpack_variants,
 )
-from bleak.backends.client import BaseBleakClient
-from bleak.backends.device import BLEDevice
-from bleak.backends.service import BleakGATTServiceCollection
-from bleak.exc import BleakDBusError, BleakError
+from myBleak.backends.client import BaseBleakClient
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.service import BleakGATTServiceCollection
+from myBleak.exc import BleakDBusError, BleakError
 
 
 logger = logging.getLogger(__name__)

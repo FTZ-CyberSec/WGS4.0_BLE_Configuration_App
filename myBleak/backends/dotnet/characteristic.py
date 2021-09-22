@@ -2,9 +2,9 @@
 from uuid import UUID
 from typing import List, Union
 
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.descriptor import BleakGATTDescriptor
-from bleak.backends.dotnet.descriptor import BleakGATTDescriptorDotNet
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.descriptor import BleakGATTDescriptor
+from myBleak.backends.dotnet.descriptor import BleakGATTDescriptorDotNet
 
 # Import of BleakBridge to enable loading of winrt bindings
 from BleakBridge import Bridge  # noqa: F401

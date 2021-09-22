@@ -11,7 +11,7 @@ from typing import (
 )
 from warnings import warn
 
-from bleak.backends.device import BLEDevice
+from myBleak.backends.device import BLEDevice
 
 
 class AdvertisementData:

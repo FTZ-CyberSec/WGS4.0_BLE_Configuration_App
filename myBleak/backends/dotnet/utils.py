@@ -7,7 +7,7 @@ Created on 2017-12-05 by hbldh <henrik.blidh@nedomkull.com>
 
 import asyncio
 
-from bleak.exc import BleakDotNetTaskError
+from myBleak.exc import BleakDotNetTaskError
 
 # Import of BleakBridge to enable loading of winrt bindings
 from BleakBridge import Bridge  # noqa: F401

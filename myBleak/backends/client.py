@@ -11,9 +11,9 @@ import uuid
 from typing import Callable, Optional, Union
 from warnings import warn
 
-from bleak.backends.service import BleakGATTServiceCollection
-from bleak.backends.characteristic import BleakGATTCharacteristic
-from bleak.backends.device import BLEDevice
+from myBleak.backends.service import BleakGATTServiceCollection
+from myBleak.backends.characteristic import BleakGATTCharacteristic
+from myBleak.backends.device import BLEDevice
 
 
 class BaseBleakClient(abc.ABC):
