@@ -21,9 +21,10 @@ import queue
 import Sensors
 import time
 import wgs_lpp_parser
+from mqtt_client import wgs_mqtt_client
+import mqtt_dialog
 
-
-class MyTable(QtWidgets.QTableWidget):
+class MyTable(object):
 	def __init__(self, windowObject, objectName):
 		self.table = windowObject.findChild(QtWidgets.QTableWidget, objectName)
 		self.tableRowCount = 0
@@ -56,9 +57,12 @@ class MyTable(QtWidgets.QTableWidget):
 		self.tableRowCount = 0
 		self.updateRowCount()
 	
-	#def currentRow(self):
-	#	row = self.table.currentRow()
-	#	return row
+	def currentRow(self):
+		row = self.table.currentRow()
+		return row
+
+	def item(self,x,y):
+		return self.table.item(x,y)
 	
 
 
@@ -75,7 +79,7 @@ class BLE_Device():
 class Ui(QtWidgets.QMainWindow):
 	def __init__(self, loop):
 		super(Ui, self).__init__()
-		uic.loadUi("MainUI.ui", self)
+		uic.loadUi("C:\\Users\\abn069\\Documents\\WGSNodeApp\\WGS4.0_BLE_Configuration_App\\MainUI.ui", self)
 
 		self.loop = loop
 		self.eggDataTable = MyTable(self, GuiTags.DATA_TABLE)
@@ -149,6 +153,44 @@ class Ui(QtWidgets.QMainWindow):
 		self.configSetTimeButton.clicked.connect(
 			lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.TIME))
 
+		"""MQTT API"""
+
+		self.configMQTTConfigMenuInterface = self.findChild(
+			QtWidgets.QAction, GuiTags.MENU_INTERFACE_MQTT)
+		self.configMQTTConfigMenuInterface.triggered.connect(
+			self.launchMQTTConfig)
+
+		self.publishMQTTButton = self.findChild(
+			QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
+		self.publishMQTTButton.clicked.connect(self.publishEggDataViaMQTT)
+	
+		##DUMMY DATA TEST
+		#self.fillDummyData()
+
+	def publishEggDataViaMQTT(self):
+		statusMQTT = wgs_mqtt_client.connected	
+		while(statusMQTT==False):
+			self.launchMQTTConfig()
+			time.sleep(1)
+			statusMQTT = wgs_mqtt_client.connected
+		
+		self.findChild(
+			QtWidgets.QLabel, GuiTags.STATUS_MQTT_LABEL).setText("Connection MQTT: Connected")
+		for i in range(0,self.eggDataTable.tableRowCount):
+			row = []
+			for j in range (0,5):
+				row.append(self.eggDataTable.item(i,j).text())
+			str = wgs_mqtt_client.jsonGeneratorFromEggTableRow(row)			
+			wgs_mqtt_client.publishNewData(str)
+
+		
+	def launchMQTTConfig(self):
+		dialog = QtWidgets.QDialog()
+		dialog.ui = mqtt_dialog.Ui_mqttConfig()
+		dialog.ui.setupUi(dialog, self.findChild(
+			QtWidgets.QLabel, GuiTags.STATUS_MQTT_LABEL))
+		dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+		dialog.exec_()
 	def programmDevice(self, ble_config_param):		
 
 		if self.bleDevice.connected == False:
@@ -226,13 +268,25 @@ class Ui(QtWidgets.QMainWindow):
 				
 				for lpp in wgs_lpp_parser.parse_byte_array(allData[i+4:]):
 					self.scanAdvParserTable.addRowInToTable([int(time.time()), lpp.channel, lpp.name, lpp.value_f ])
+	def fillDummyData(self):
+		allData = [0x76, 0x64, 0x17, 0x2, 0x0, 0x0, 0x76, 0x85, 1,103,  0xef, 0x00, 0x0, 0x0, 0x0, 0x0]
+		new_row = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+		new_row[0] = convert_int_in_hex_string(allData[0:4])
+		new_row[1] = convert_bytes_in_int_lsb(allData[4:], 4)
+		wgsRet = wgs_lpp_parser.parse_byte_array(allData[8:])
+		for t in wgsRet:
+			print(t.name, t.value_f)
+		#new_row[2] = allData[8] #Type
+		new_row[2] = wgsRet[0].name
+		new_row[3] = wgsRet[0].channel
+		new_row[4] = wgsRet[0].value_f
+		#new_row[3] = allData[9] #Channel
+		#new_row[4] = convert_bytes_in_int_lsb(allData[10:],Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])) )
+		#print(int_values, " | ",new_row )
+
+		self.eggDataTable.addRowInToTable(new_row)   
 					
 			
-
-
-
-
-
 
 
 	async def scanAndParse(self):
@@ -269,7 +323,60 @@ class Ui(QtWidgets.QMainWindow):
 			self.scanTable.addRowInToTable(new_row)
 
 	def startConnect(self):
+		asyncio.ensure_future(self.startConnect_(), loop=self.loop)
+
+	async def startConnect_(self):
+
 		print('ROW: ' + str(self.scanTable.currentRow()))
+		macAddr = self.scanTable.item(0,0).text()
+		print(macAddr)
+		client = BleakClient(macAddr)
+		try:
+			await client.connect()
+		except Exception as e:
+			self.setConnectionStatusDisconnected()
+			self.scanProgressBar.setValue(0)
+
+		finally:
+			self.scanProgressBar.setValue(100)
+			svcs = await client.get_services()
+			print("Services:")
+			for service in svcs:						
+				print(service)
+				for c in service.characteristics:
+					if c.handle == 22:
+						GuiTags.WGS_CONFIG_UUID = c.uuid
+					if c.handle == 25:
+						GuiTags.WGS_DATA_UUID = c.uuid
+
+
+
+			self.setConnectionStatusConnected(client)
+		'''if d.name == GuiTags.DEVICE_NAME:
+			client = BleakClient(d.address)
+			try:
+				await client.connect()
+			except Exception as e:
+				self.setConnectionStatusDisconnected()
+				self.scanProgressBar.setValue(0)
+
+			finally:
+				self.scanProgressBar.setValue(100)
+
+				svcs = await client.get_services()
+				print("Services:")
+				for service in svcs:						
+					print(service)
+					for c in service.characteristics:
+						if c.handle == 22:
+							GuiTags.WGS_CONFIG_UUID = c.uuid
+						if c.handle == 25:
+							GuiTags.WGS_DATA_UUID = c.uuid
+
+
+				self.setConnectionStatusConnected(client)
+		'''			
+
 		'''if d.name == GuiTags.DEVICE_NAME:
 			client = BleakClient(d.address)
 			try:
@@ -340,10 +447,10 @@ class Ui(QtWidgets.QMainWindow):
 		print(int_values)
 		new_row = [0,0,0,0,0,0,0,0,0,0,0,0,0]
 		new_row[0] = convert_int_in_hex_string(int_values[0:4])
-		new_row[1] = convert_bytes_in_int_lsb(int_values[4:], 4)
+		new_row[1] = convert_bytes_in_int_lsb2(int_values[4:], 4)
 		new_row[2] = int_values[8] #Type
 		new_row[3] = int_values[9] #Channel
-		new_row[4] = convert_bytes_in_int_lsb(int_values[10:],Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])) )
+		new_row[4] = convert_bytes_in_int_lsb2(int_values[10:],Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])) )
 		#print(int_values, " | ",new_row )
 
 		self.eggDataTable.addRowInToTable(new_row)   

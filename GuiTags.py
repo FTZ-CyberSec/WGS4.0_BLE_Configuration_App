@@ -25,6 +25,9 @@ CONFIG_FIELD_DEVEUI = 'configFieldDevEUI'
 CONFIG_FIELD_APP_KEY = 'configFieldAppKey'
 CONFIG_LIST_SENSORS = 'configListSensors'
 
+STATUS_MQTT_LABEL ='labelConnectionMQTT'
+PUBLISH_MQTT_LABEL = 'publishEggDataTableButton'
+
 #BUTTONS
 CONFIG_PROGRAM_BUTTON_APP = 'configProgramButtonApp'
 CONFIG_PROGRAM_BUTTON_SENSORS = 'configProgramButtonSensors'
@@ -35,7 +38,8 @@ CONFIG_PROGRAM_BUTTON_START = 'configProgramButtonStart'
 CONFIG_PROGRAM_BUTTON_RESET = 'configProgramButtonReset'
 CONFIG_PROGRAM_BUTTON_TIME = 'configProgramButtonTime'
 
-
+#MENU
+MENU_INTERFACE_MQTT = 'actionMQTTConfig'
 
 class Application(Enum):
 	TRUMME = 0

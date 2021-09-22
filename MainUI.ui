@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1323</width>
-    <height>884</height>
+    <width>1401</width>
+    <height>912</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -42,7 +42,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="connectionTab">
      <attribute name="title">
@@ -675,51 +675,68 @@
      <attribute name="title">
       <string>Egg Data</string>
      </attribute>
-     <layout class="QGridLayout" name="gridLayout_9">
-      <item row="0" column="0" colspan="2">
-       <widget class="QTableWidget" name="eggDataTable">
-        <column>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>11</x>
+        <y>11</y>
+        <width>1011</width>
+        <height>721</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0" colspan="3">
+        <widget class="QTableWidget" name="eggDataTable">
+         <column>
+          <property name="text">
+           <string>Address</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Time</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Sensor Type</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Channel</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Value</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="pushButton">
          <property name="text">
-          <string>Address</string>
+          <string>Copy Data</string>
          </property>
-        </column>
-        <column>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="cleanEggDataTableButton">
          <property name="text">
-          <string>Time</string>
+          <string>Clean Data</string>
          </property>
-        </column>
-        <column>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="publishEggDataTableButton">
          <property name="text">
-          <string>Sensor Type</string>
+          <string>Publish Data via MQTT</string>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Channel</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Value</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Copy Data</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="cleanEggDataTableButton">
-        <property name="text">
-         <string>Clean Data</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -767,8 +784,8 @@
      <rect>
       <x>1051</x>
       <y>436</y>
-      <width>75</width>
-      <height>24</height>
+      <width>331</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
@@ -780,32 +797,34 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>336</width>
+      <width>631</width>
       <height>50</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>28</pointsize>
+      <pointsize>22</pointsize>
+      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string>Connection Status: </string>
+     <string>Connection Status Sensor: </string>
     </property>
    </widget>
    <widget class="QLabel" name="connectionStatusLabel">
     <property name="geometry">
      <rect>
-      <x>1051</x>
+      <x>1050</x>
       <y>10</y>
-      <width>262</width>
+      <width>351</width>
       <height>50</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>28</pointsize>
+      <pointsize>22</pointsize>
+      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
@@ -819,18 +838,60 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#aa0000;&quot;&gt;Not Connected&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QLabel" name="labelConnectionMQTT">
+    <property name="geometry">
+     <rect>
+      <x>1215</x>
+      <y>840</y>
+      <width>171</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>Connection MQTT: Not Connected</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::PlainText</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1323</width>
+     <width>1401</width>
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuSchnittstellen">
+    <property name="title">
+     <string>Schnittstellen</string>
+    </property>
+    <addaction name="actionMQTTConfig"/>
+   </widget>
+   <addaction name="menuDatei"/>
+   <addaction name="menuSchnittstellen"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionMQTT">
+   <property name="text">
+    <string>MQTT</string>
+   </property>
+  </action>
+  <action name="actionMQTTConfig">
+   <property name="text">
+    <string>MQTT</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

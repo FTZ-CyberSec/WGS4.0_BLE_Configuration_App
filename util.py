@@ -29,3 +29,4 @@ def convert_int_in_bytes(i):
     mask = (1<<8) - 1
     return [(i>>k) & mask for k in range(0,32,8)]
 
+print(convert_bytes_in_int_lsb2([43, 242, 73, 97], 4))
