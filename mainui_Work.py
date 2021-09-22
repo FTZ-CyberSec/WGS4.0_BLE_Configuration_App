@@ -11,9 +11,9 @@ import sys
 import asyncio
 import string
 from asyncqt import QEventLoop
-from bleak import BleakScanner, BleakClient, discover
-from bleak.backends.device import BLEDevice
-from bleak.backends.scanner import AdvertisementData
+from myBleak import BleakScanner, BleakClient, discover
+from myBleak.backends.device import BLEDevice
+from myBleak.backends.scanner import AdvertisementData
 import GuiTags
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from util import * 
