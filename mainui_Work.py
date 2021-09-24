@@ -79,7 +79,7 @@ class BLE_Device():
 class Ui(QtWidgets.QMainWindow):
 	def __init__(self, loop):
 		super(Ui, self).__init__()
-		uic.loadUi("C:\\Users\\abn069\\Documents\\WGSNodeApp\\WGS4.0_BLE_Configuration_App\\MainUI.ui", self)
+		uic.loadUi("MainUI.ui", self)
 
 		self.loop = loop
 		self.eggDataTable = MyTable(self, GuiTags.DATA_TABLE)

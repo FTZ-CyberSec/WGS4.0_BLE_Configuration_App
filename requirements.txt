@@ -1,3 +1,4 @@
 pip install PyQt5
 pip install asyncqt
 pip install bleak
+pip install paho-mqtt
