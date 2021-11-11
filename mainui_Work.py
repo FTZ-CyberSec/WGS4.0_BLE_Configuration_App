@@ -246,6 +246,7 @@ class Ui(QtWidgets.QMainWindow):
 		if(self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_JUST_SCAN).isChecked()):
 			asyncio.ensure_future(self.scanAndParse(), loop=self.loop)
 		else:
+			print()
 
 			asyncio.ensure_future(self.progressBar(), loop=self.loop)
 			asyncio.ensure_future(self.startBleScan(), loop=self.loop)
@@ -303,7 +304,7 @@ class Ui(QtWidgets.QMainWindow):
 	async def progressBar(self):
 		count = 0
 		for i in range(0, 5):
-			await asyncio.sleep(1.0)
+			await asyncio.sleep(int(5))
 			count += 19
 
 			self.scanProgressBar.setValue(count)

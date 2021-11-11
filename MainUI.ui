@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1401</width>
-    <height>912</height>
+    <width>1440</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -29,8 +32,8 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>66</y>
+      <x>50</x>
+      <y>30</y>
       <width>1035</width>
       <height>765</height>
      </rect>
@@ -206,7 +209,49 @@
       <string>Config Node</string>
      </attribute>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="2" column="0">
+      <item row="4" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Set Unixtime</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_20">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="configProgramButtonTime">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Set Time</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_21">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
          <widget class="QLabel" name="label_9">
@@ -257,7 +302,7 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0">
+      <item row="2" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -315,113 +360,7 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Set Unixtime</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_20">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="configProgramButtonTime">
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Set Time</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_21">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Application</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="configListApp">
-          <item>
-           <property name="text">
-            <string>Trumme</string>
-           </property>
-           <property name="statusTip">
-            <string>Trummenanwendungsfall</string>
-           </property>
-           <property name="whatsThis">
-            <string>Trummenanwendungsfall</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Egg</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_9">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="configProgramButtonApp">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Program</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="5" column="0">
+      <item row="3" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -498,7 +437,7 @@
         </item>
        </layout>
       </item>
-      <item row="7" column="0">
+      <item row="5" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -551,7 +490,7 @@
         </item>
        </layout>
       </item>
-      <item row="8" column="0">
+      <item row="6" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label_7">
@@ -581,18 +520,7 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="Line" name="line_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0">
+      <item row="1" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -654,7 +582,7 @@
         </item>
        </layout>
       </item>
-      <item row="9" column="0">
+      <item row="7" column="0">
        <widget class="QPushButton" name="configProgramButtonReset">
         <property name="enabled">
          <bool>false</bool>
@@ -675,7 +603,7 @@
      <attribute name="title">
       <string>Egg Data</string>
      </attribute>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>11</x>
@@ -685,7 +613,28 @@
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0" colspan="3">
+       <item row="2" column="0">
+        <widget class="QPushButton" name="CopyDataButton">
+         <property name="text">
+          <string>Copy Data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="cleanEggDataTableButton">
+         <property name="text">
+          <string>Clean Data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="publishEggDataTableButton">
+         <property name="text">
+          <string>Publish Data via MQTT</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
         <widget class="QTableWidget" name="eggDataTable">
          <column>
           <property name="text">
@@ -712,27 +661,6 @@
            <string>Value</string>
           </property>
          </column>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="pushButton">
-         <property name="text">
-          <string>Copy Data</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="cleanEggDataTableButton">
-         <property name="text">
-          <string>Clean Data</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QPushButton" name="publishEggDataTableButton">
-         <property name="text">
-          <string>Publish Data via MQTT</string>
-         </property>
         </widget>
        </item>
       </layout>
@@ -782,9 +710,9 @@
    <widget class="QPushButton" name="disconnectButton">
     <property name="geometry">
      <rect>
-      <x>1051</x>
+      <x>1131</x>
       <y>436</y>
-      <width>331</width>
+      <width>251</width>
       <height>51</height>
      </rect>
     </property>
@@ -797,7 +725,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>631</width>
+      <width>341</width>
       <height>50</height>
      </rect>
     </property>
@@ -863,7 +791,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1401</width>
+     <width>1440</width>
      <height>22</height>
     </rect>
    </property>
