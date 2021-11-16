@@ -74,16 +74,6 @@ class MyTable(object):
     # writer = csv.writer(myFile)
     # writer.writerows(row)
     # print(myFile)
-    def export_csv(self):
-        def export_csv(self):
-            for i in range(0, self.eggDataTable.tableRowCount):
-                row = []
-                for j in range(0, 4):
-                    row.append(self.eggDataTable.item(i, j).text())
-                    with open('odd.csv', 'w+', newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerows(row)
-                        file.close()
 
 
 class BLE_Device():
@@ -126,7 +116,7 @@ class Ui(QtWidgets.QMainWindow):
 
         self.exportToCsvButton = self.findChild(
             QtWidgets.QPushButton, 'exportToCsvButton')
-        self.exportToCsvButton.clicked.connect(self.eggDataTable.export_csv())
+        self.exportToCsvButton.clicked.connect(self.export_csv)
 
         self.connectionLabel = self.findChild(
             QtWidgets.QLabel, GuiTags.CONNECTION_STATUS_LABEL)
@@ -186,9 +176,18 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publishEggDataViaMQTT)
 
-    ##DUMMY DATA TEST
-    # self.fillDummyData()
-
+    def export_csv(self):
+        data = []
+        for i in range(0, self.eggDataTable.tableRowCount):
+            row = []
+            #print(self.eggDataTable.columnCount())
+            for j in range(0, 5):
+                row.append(self.eggDataTable.item(i, j).text())
+            data.append(row)
+        with open('odd.csv', 'w+', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+        print("CSV Created")
 
     def publishEggDataViaMQTT(self):
         statusMQTT = wgs_mqtt_client.connected
@@ -302,15 +301,9 @@ class Ui(QtWidgets.QMainWindow):
             new_row[1] = convert_bytes_in_int_lsb(allData[4:], 4)
             wgsRet = wgs_lpp_parser.parse_byte_array(allData[8:])
             for t in wgsRet:
-                print(t.name, t.value_f)
-            # new_row[2] = allData[8] #Type
-            new_row[2] = wgsRet[0].name
-            new_row[3] = wgsRet[0].channel
-            new_row[4] = wgsRet[0].value_f
-            # new_row[3] = allData[9] #Channel
-            # new_row[4] = convert_bytes_in_int_lsb(allData[10:],Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])) )
-            # print(int_values, " | ",new_row )
-
+                new_row[2] = wgsRet[0].name
+                new_row[3] = wgsRet[0].channel
+                new_row[4] = wgsRet[0].value_f
             self.eggDataTable.addRowInToTable(new_row)
 
     async def scanAndParse(self):
