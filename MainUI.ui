@@ -45,7 +45,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="connectionTab">
      <attribute name="title">
@@ -614,9 +614,9 @@
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="2" column="0">
-        <widget class="QPushButton" name="CopyDataButton">
+        <widget class="QPushButton" name="exportToCsvButton">
          <property name="text">
-          <string>Copy Data</string>
+          <string>Export Data</string>
          </property>
         </widget>
        </item>

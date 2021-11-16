@@ -2,7 +2,6 @@ from enum import Enum
 
 DATA_TABLE = 'eggDataTable'
 CLEAN_DATA_TABLE_BUTTON = 'cleanEggDataTableButton'
-COPY_DATA_TABLE_BUTTON = 'copyEggDataTableButton'
 SCAN_TABLE = 'scanTable'
 SCAN_BUTTON = 'scanButton'
 CONNECT_BUTTON = 'connectButton'
@@ -35,6 +34,7 @@ CONFIG_BUTTON_DEVEUI = 'configButtonDevEUI'
 CONFIG_PROGRAM_BUTTON_START = 'configProgramButtonStart'
 CONFIG_PROGRAM_BUTTON_RESET = 'configProgramButtonReset'
 CONFIG_PROGRAM_BUTTON_TIME = 'configProgramButtonTime'
+EXPORT_TO_CSV_BUTTON = "exportToCsvButton"
 #COPY_DATA_BUTTON = 'copyDataButton'
 # MENU
 MENU_INTERFACE_MQTT = 'actionMQTTConfig'

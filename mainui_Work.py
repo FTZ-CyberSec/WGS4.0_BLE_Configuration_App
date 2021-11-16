@@ -74,17 +74,16 @@ class MyTable(object):
     # writer = csv.writer(myFile)
     # writer.writerows(row)
     # print(myFile)
-    def copydata(self):
-        for i in range(0, self.eggDataTable.tableRowCount):
-            row = []
-            for j in range(0, 4):
-                row.append(self.eggDataTable.item(i, j).text())
-                with open('odd.csv', 'w+', newline='') as file:
-                    writer = csv.writer(file)
-                    writer.writerows(row)
-                    file.close()
-
-    print("file Generated")
+    def export_csv(self):
+        def export_csv(self):
+            for i in range(0, self.eggDataTable.tableRowCount):
+                row = []
+                for j in range(0, 4):
+                    row.append(self.eggDataTable.item(i, j).text())
+                    with open('odd.csv', 'w+', newline='') as file:
+                        writer = csv.writer(file)
+                        writer.writerows(row)
+                        file.close()
 
 
 class BLE_Device():
@@ -125,9 +124,9 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, 'cleanScanTableButton')
         self.cleanScanTableButton.clicked.connect(self.scanTable.cleanTable)
 
-        self.copyDataTableButton = self.findChild(
-            QtWidgets.QPushButton, 'copyDataTableButton')
-        self.copyDataTableButton.clicked.connect(self.copyData())
+        self.exportToCsvButton = self.findChild(
+            QtWidgets.QPushButton, 'exportToCsvButton')
+        self.exportToCsvButton.clicked.connect(self.eggDataTable.export_csv())
 
         self.connectionLabel = self.findChild(
             QtWidgets.QLabel, GuiTags.CONNECTION_STATUS_LABEL)
@@ -189,6 +188,7 @@ class Ui(QtWidgets.QMainWindow):
 
     ##DUMMY DATA TEST
     # self.fillDummyData()
+
 
     def publishEggDataViaMQTT(self):
         statusMQTT = wgs_mqtt_client.connected
