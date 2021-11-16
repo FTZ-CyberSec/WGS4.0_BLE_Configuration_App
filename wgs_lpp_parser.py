@@ -28,8 +28,8 @@ type_gps = 136
 type_switch = 142
 
 
-class WGS_LPP(object):
-    def __init__(self, type, name,size,  divisor, channel=0,value=0):
+class WgsLpp(object):
+    def __init__(self, type, name, size, divisor, channel=0, value=0):
         super().__init__()
         self.name = name
         self.size = size
@@ -37,28 +37,28 @@ class WGS_LPP(object):
         self.value = value
         self.divisor = divisor
         self.channel = channel
-        self.value_f = self.value/divisor
+        self.value_f = self.value / divisor
 
 
-all_sensor_types = [WGS_LPP(type_digitalIn, "DigitalIn (Waterlevel)",1, 1.0), WGS_LPP(
-    type_temperature, "Temperature",2, 10.0), WGS_LPP(type_generic, "Generic (Message Counter)", 4,1.0), WGS_LPP(type_time, "Time",4, 1.0) ]
+all_sensor_types = [WgsLpp(type_digitalIn, "DigitalIn (Waterlevel)", 1, 1.0), WgsLpp(
+    type_temperature, "Temperature", 2, 10.0), WgsLpp(type_generic, "Generic (Message Counter)", 4, 1.0),
+                    WgsLpp(type_time, "Time", 4, 1.0)]
 
 
 def parse_byte_array(arr):
-    retWGS_LPP_List = []
+    ret_wgs_lpp_list = []
     i = 1
-    while(i<len(arr)):
+    while i < len(arr):
         size = 0
         for sensor in all_sensor_types:
-            if arr[i] == sensor.type and sensor.size + 1<=len(arr) and arr[i-1]!=0: #Richtiger Typ, nicht zu kurz und Channel ist nicht 0
+            if arr[i] == sensor.type and sensor.size + 1 <= len(arr) and arr[i - 1] != 0:
                 size = sensor.size
-                retWGS_LPP_List.append(WGS_LPP(sensor.type, sensor.name, sensor.size , sensor.divisor,channel=arr[i-1], value = convert_bytes_in_int_lsb2(arr[i+1:],sensor.size, sizeInt=  sensor.size*8  )))
-                break;
-        i+= size + 1
-    return retWGS_LPP_List
-
+                ret_wgs_lpp_list.append(
+                    WgsLpp(sensor.type, sensor.name, sensor.size, sensor.divisor, channel=arr[i - 1],
+                           value=convert_bytes_in_int_lsb2(arr[i + 1:], sensor.size, sizeInt=sensor.size * 8)))
+                break
+        i += size + 1
+    return ret_wgs_lpp_list
 
 
 test = parse_byte_array([0x76, 0x64, 0x17, 0x2, 0x0, 0x0, 0x76, 0x85, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
-#for t in test:
-#    print(t.name, t.value)
