@@ -6,3 +6,4 @@ PyQt5~=5.15.4
 asyncqt~=0.8.0
 paho-mqtt~=1.6.1
 bleak~=0.13.0
+

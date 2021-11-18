@@ -10,7 +10,9 @@
 import sys
 import asyncio
 import string
-from asyncqt import QEventLoop
+
+from typing import TextIO
+from qasync import QEventLoop
 from bleak import BleakScanner, BleakClient, discover
 from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
@@ -23,6 +25,9 @@ import time
 import wgs_lpp_parser
 from mqtt_client import wgs_mqtt_client
 import mqtt_dialog
+import math
+import csv
+
 
 
 class MyTable(object):
@@ -164,7 +169,21 @@ class Ui(QtWidgets.QMainWindow):
         self.publishMQTTButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
-
+        
+     def export_csv(self):
+        """
+        Exporting eggDataTable to CSV file "odd.csv"
+        """
+        data = []
+        for i in range(0, self.eggDataTable.tableRowCount):
+            row = [self.eggDataTable.item(i, j).text() for j in range(0, 5)]
+            data.append(row)
+        with open('odd.csv', 'w+', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Address', 'Time', 'Sensor Type', 'Channel', 'value'])
+            writer.writerows(data)
+        print("CSV Created")
+        
     def publish_data_via_mqtt(self):
         status_mqtt = wgs_mqtt_client.connected
         while not status_mqtt:
