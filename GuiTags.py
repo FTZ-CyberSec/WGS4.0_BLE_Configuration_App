@@ -32,10 +32,10 @@ CONFIG_PROGRAM_BUTTON_MEASURE_INTERVAL = 'configProgramButtonMeasureInterval'
 CONFIG_PROGRAM_BUTTON_APP_KEY = 'configProgramButtonAppKey'
 CONFIG_BUTTON_DEVEUI = 'configButtonDevEUI'
 CONFIG_PROGRAM_BUTTON_START = 'configProgramButtonStart'
+CONFIG_PROGRAM_BUTTON_STOP = 'configProgramButtonStop'
 CONFIG_PROGRAM_BUTTON_RESET = 'configProgramButtonReset'
 CONFIG_PROGRAM_BUTTON_TIME = 'configProgramButtonTime'
 EXPORT_TO_CSV_BUTTON = "exportToCsvButton"
-#COPY_DATA_BUTTON = 'copyDataButton'
 # MENU
 MENU_INTERFACE_MQTT = 'actionMQTTConfig'
 
@@ -56,6 +56,7 @@ class BLE_CONFIG_PARAM(Enum):
     APP_TYPE = 0x07
     TIME = 0x08
     DEV_EUI = 0x09
+    STOP = 0x10
 
 
 MAX_LORAWAN_KEY_LEN = 16 * 2
