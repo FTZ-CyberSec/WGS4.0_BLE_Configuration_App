@@ -10,8 +10,8 @@
 import sys
 import asyncio
 import string
-from typing import TextIO
 
+from typing import TextIO
 from qasync import QEventLoop
 from bleak import BleakScanner, BleakClient, discover
 from bleak.backends.device import BLEDevice
@@ -29,18 +29,17 @@ import math
 import csv
 
 
+
 class MyTable(object):
-    def __init__(self, windowObject, objectName):
-        """
-        ___init___ method which will run whatever we create as instance of our window
-
-        """
-        self.table = windowObject.findChild(QtWidgets.QTableWidget, objectName)
+    def __init__(self, window_object, object_name):
+        self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
         self.tableRowCount = 0
-        self.windowObject = windowObject
-        self.table.keyPressEvent = self.keyPressEvent
+        self.windowObject = window_object
+        self.table.key_press_event = self.key_press_event
 
-    def keyPressEvent(self, event):
+
+
+    def key_press_event(self, event):
         if event.key() == QtCore.Qt.Key_C and event.modifiers() & QtCore.Qt.ControlModifier:
             self.copy()
 
@@ -50,31 +49,31 @@ class MyTable(object):
             QtWidgets.QApplication.clipboard().clear()
             QtWidgets.QApplication.clipboard().setMimeData(item.text)
 
-    def addRowInToTable(self, elem):
+    def add_row_into_table(self, elem):
         self.tableRowCount += 1
-        self._updateRowCount()
+        self.update_row_count()
         column = 0
         for e in elem:
             self.table.setItem(self.tableRowCount - 1, column,
                                QtWidgets.QTableWidgetItem(str(e)))
             column += 1
 
-    def _updateRowCount(self):
+    def update_row_count(self):
         self.table.setRowCount(self.tableRowCount)
 
-    def cleanTable(self):
+    def clean_table(self):
         self.tableRowCount = 0
-        self._updateRowCount()
+        self.update_row_count()
 
-    def currentRow(self):
-        row = self.table.currentRow()
+    def current_row(self):
+        row = self.table.current_row()
         return row
 
     def item(self, x, y):
         return self.table.item(x, y)
 
 
-class BLE_Device():
+class BleDevice:
     def __init__(self):
         self.address = None
         self.name = None
@@ -91,7 +90,8 @@ class Ui(QtWidgets.QMainWindow):
 
         self.loop = loop
         self.eggDataTable = MyTable(self, GuiTags.DATA_TABLE)
-        self.findChild(QtWidgets.QPushButton, GuiTags.CLEAN_DATA_TABLE_BUTTON).clicked.connect(self.fillDummyData)
+        self.findChild(QtWidgets.QPushButton, GuiTags.CLEAN_DATA_TABLE_NUTTON).clicked.connect(
+            self.eggDataTable.clean_table)
 
         self.scanTable = MyTable(self, GuiTags.SCAN_TABLE)
 
@@ -99,29 +99,25 @@ class Ui(QtWidgets.QMainWindow):
 
         self.scanButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.SCAN_BUTTON)
-        self.scanButton.clicked.connect(self.startScan)
+        self.scanButton.clicked.connect(self.start_scan)
 
         self.connectButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONNECT_BUTTON)
-        self.connectButton.clicked.connect(self.startConnect)
+        self.connectButton.clicked.connect(self.start_connect)
 
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
 
         self.cleanScanTableButton = self.findChild(
             QtWidgets.QPushButton, 'cleanScanTableButton')
-        self.cleanScanTableButton.clicked.connect(self.scanTable.cleanTable)
-
-        self.exportToCsvButton = self.findChild(
-            QtWidgets.QPushButton, 'exportToCsvButton')
-        self.exportToCsvButton.clicked.connect(self.export_csv)
+        self.cleanScanTableButton.clicked.connect(self.scanTable.clean_table)
 
         self.connectionLabel = self.findChild(
             QtWidgets.QLabel, GuiTags.CONNECTION_STATUS_LABEL)
 
         self.ScanButtonPressed = False
 
-        self.bleDevice = BLE_Device()
+        self.bleDevice = BleDevice()
 
         '''Configuration'''
         self.configListApp = self.findChild(
@@ -132,17 +128,17 @@ class Ui(QtWidgets.QMainWindow):
         self.configDevEUIButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_BUTTON_DEVEUI)
         self.configDevEUIButton.clicked.connect(
-            lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.DEV_EUI))
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.DEV_EUI))
 
         self.configMeasureIntervalButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_MEASURE_INTERVAL)
         self.configMeasureIntervalButton.clicked.connect(
-            lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.MEASURE_INTERVAL))
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.MEASURE_INTERVAL))
 
         self.configAppKeyButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_APP_KEY)
         self.configAppKeyButton.clicked.connect(
-            lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.APP_KEY))
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.APP_KEY))
 
         self.configAppKeyField = self.findChild(
             QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY)
@@ -151,30 +147,30 @@ class Ui(QtWidgets.QMainWindow):
         self.configSensorsButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_SENSORS)
         self.configSensorsButton.clicked.connect(
-            lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.SENSOR_TYPE))
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.SENSOR_TYPE))
 
         self.configStartButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_START)
         self.configStartButton.clicked.connect(
-            lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.START))
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.START))
 
         self.configSetTimeButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_TIME)
         self.configSetTimeButton.clicked.connect(
-            lambda: self.programmDevice(GuiTags.BLE_CONFIG_PARAM.TIME))
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.TIME))
 
         """MQTT API"""
 
         self.configMQTTConfigMenuInterface = self.findChild(
             QtWidgets.QAction, GuiTags.MENU_INTERFACE_MQTT)
         self.configMQTTConfigMenuInterface.triggered.connect(
-            self.launchMQTTConfig)
+            self.launch_mqtt_config)
 
         self.publishMQTTButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
-        self.publishMQTTButton.clicked.connect(self.publishEggDataViaMQTT)
-
-    def export_csv(self):
+        self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
+        
+     def export_csv(self):
         """
         Exporting eggDataTable to CSV file "odd.csv"
         """
@@ -187,13 +183,13 @@ class Ui(QtWidgets.QMainWindow):
             writer.writerow(['Address', 'Time', 'Sensor Type', 'Channel', 'value'])
             writer.writerows(data)
         print("CSV Created")
-
-    def publishEggDataViaMQTT(self):
-        statusMQTT = wgs_mqtt_client.connected
-        while (statusMQTT == False):
-            self.launchMQTTConfig()
+        
+    def publish_data_via_mqtt(self):
+        status_mqtt = wgs_mqtt_client.connected
+        while not status_mqtt:
+            self.launch_mqtt_config()
             time.sleep(1)
-            statusMQTT = wgs_mqtt_client.connected
+            status_mqtt = wgs_mqtt_client.connected
 
         self.findChild(
             QtWidgets.QLabel, GuiTags.STATUS_MQTT_LABEL).setText("Connection MQTT: Connected")
@@ -204,7 +200,7 @@ class Ui(QtWidgets.QMainWindow):
             str = wgs_mqtt_client.jsonGeneratorFromEggTableRow(row)
             wgs_mqtt_client.publishNewData(str)
 
-    def launchMQTTConfig(self):
+    def launch_mqtt_config(self):
         dialog = QtWidgets.QDialog()
         dialog.ui = mqtt_dialog.Ui_mqttConfig()
         dialog.ui.setupUi(dialog, self.findChild(
@@ -212,31 +208,31 @@ class Ui(QtWidgets.QMainWindow):
         dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         dialog.exec_()
 
-    def programmDevice(self, ble_config_param):
+    def program_device(self, ble_config_param):
 
-        if self.bleDevice.connected == False:
+        if not self.bleDevice.connected:
             print("Device not connected")
         else:
             if ble_config_param == GuiTags.BLE_CONFIG_PARAM.START:
                 print('Start Device')
                 data = [GuiTags.BLE_CONFIG_PARAM.START.value, 0x99]
-                asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID, data, disconnect=True), loop=self.loop)
+                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=True), loop=self.loop)
             elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.TIME:
                 print('Set Time Device')
                 data = convert_int_in_bytes(int(time.time()))
                 data.insert(0, GuiTags.BLE_CONFIG_PARAM.TIME.value)
-                asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
+                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
             ######Config Application Type######
             elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.APP_TYPE:
                 print('Set Application Type')
                 data = self.configListApp.currentRow()
-                asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
+                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
             # Config Measure Interval
             elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.MEASURE_INTERVAL:
                 try:
-                    measureIntervall = int(self.findChild(
+                    measure_interval = int(self.findChild(
                         QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_MEASURE_INTERVAL).toPlainText())
-                    print("Measure Intervall", measureIntervall)
+                    print("Measure Intervall", measure_interval)
                 except:
                     print("Illegal Input")
             # Config LoRaWAN APPKey
@@ -245,7 +241,7 @@ class Ui(QtWidgets.QMainWindow):
                 data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                 if len(data) == 16:
                     data.insert(0, GuiTags.BLE_CONFIG_PARAM.APP_KEY.value)
-                    asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
+                    asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                     print('Der App Key wurde übertragen')
                 else:
                     print('Der eingegebene App Key ist nicht zulässig')
@@ -256,63 +252,46 @@ class Ui(QtWidgets.QMainWindow):
                 data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                 if len(data) == 8:
                     data.insert(0, GuiTags.BLE_CONFIG_PARAM.DEV_EUI.value)
-                    asyncio.ensure_future(self.writeChars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
+                    asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                     print('Die Dev EUI wurde übertragen')
                 else:
                     print('Die eingegebene EUI ist nicht zulässig')
 
-    def startScan(self):
+    def start_scan(self):
         self.ScanButtonPressed = True
-        if (self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_JUST_SCAN).isChecked()):
-            asyncio.ensure_future(self.scanAndParse(), loop=self.loop)
+        if self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_JUST_SCAN).isChecked():
+            asyncio.ensure_future(self.scan_and_parse(), loop=self.loop)
         else:
-            print()
+            asyncio.ensure_future(self.progress_bar(), loop=self.loop)
+            asyncio.ensure_future(self.start_ble_scan(), loop=self.loop)
 
-            asyncio.ensure_future(self.progressBar(), loop=self.loop)
-            asyncio.ensure_future(self.startBleScan(), loop=self.loop)
-
-    # self.scanTable.addRowInToTable(row_test)
-
-    async def writeChars(self, uuid, data, disconnect=False):
+    async def write_chars(self, uuid, data, disconnect=False):
         await self.bleDevice.client.write_gatt_char(uuid, data)
-        if (disconnect):
+        if disconnect:
             await self.bleDevice.client.disconnect()
-            self.setConnectionStatusDisconnected()
+            self.set_connection_status_disconnected()
 
     def scanner_callback_parse_adv(self, device: BLEDevice, advertisement_data: AdvertisementData):
-        allData = advertisement_data.all_data
-        if allData == None:
+        all_data = advertisement_data.all_data
+        if all_data is None:
             return
-        for i in range(0, len(allData)):
-            if len(allData) < i + 4:
+        for i in range(0, len(all_data)):
+            if len(all_data) < i + 4:
                 break
-            if allData[i] == GuiTags.WGS_ADV_PREAMBLE[0] and allData[i + 1] == GuiTags.WGS_ADV_PREAMBLE[1] and allData[
-                i + 2] == GuiTags.WGS_ADV_PREAMBLE[2] and allData[i + 3] == GuiTags.WGS_ADV_PREAMBLE[3]:
+            if all_data[i] == GuiTags.WGS_ADV_PREAMBLE[0] and all_data[i + 1] == GuiTags.WGS_ADV_PREAMBLE[1] and all_data[
+                i + 2] == GuiTags.WGS_ADV_PREAMBLE[2] and all_data[i + 3] == GuiTags.WGS_ADV_PREAMBLE[3]:
 
-                for lpp in wgs_lpp_parser.parse_byte_array(allData[i + 4:]):
-                    self.scanAdvParserTable.addRowInToTable([int(time.time()), lpp.channel, lpp.name, lpp.value_f])
+                for lpp in wgs_lpp_parser.parse_byte_array(all_data[i + 4:]):
+                    self.scanAdvParserTable.add_row_into_table([int(time.time()), lpp.channel, lpp.name, lpp.value_f])
 
-    def fillDummyData(self):
-        allData = [0x76, 0x64, 0x17, 0x2, 0x0, 0x0, 0x76, 0x85, 1, 103, 0xef, 0x00, 0x0, 0x0, 0x0, 0x0]
-        for i in range(0, 4):
-            new_row = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            new_row[0] = convert_int_in_hex_string(allData[0:4])
-            new_row[1] = convert_bytes_in_int_lsb(allData[4:], 4)
-            wgsRet = wgs_lpp_parser.parse_byte_array(allData[8:])
-            for t in wgsRet:
-                new_row[2] = wgsRet[0].name
-                new_row[3] = wgsRet[0].channel
-                new_row[4] = wgsRet[0].value_f
-            self.eggDataTable.addRowInToTable(new_row)
-
-    async def scanAndParse(self):
+    async def scan_and_parse(self):
         scanner = BleakScanner()
         scanner.register_detection_callback(self.scanner_callback_parse_adv)
         await scanner.start()
         await asyncio.sleep(5.0)
         await scanner.stop()
 
-    async def progressBar(self):
+    async def progress_bar(self):
         count = 0
         for i in range(0, 5):
             await asyncio.sleep(int(5))
@@ -320,7 +299,7 @@ class Ui(QtWidgets.QMainWindow):
 
             self.scanProgressBar.setValue(count)
 
-    async def startBleScan(self):
+    async def start_ble_scan(self):
         print('Start Scan')
         scanner = BleakScanner()
         await scanner.start()
@@ -332,15 +311,16 @@ class Ui(QtWidgets.QMainWindow):
             new_row[0] = d.address
             new_row[1] = d.name
             new_row[2] = d.rssi
-            self.scanTable.addRowInToTable(new_row)
+            self.scanTable.add_row_into_table(new_row)
 
-    def startConnect(self):
-        asyncio.ensure_future(self.startConnect_(), loop=self.loop)
+    def start_connect(self):
+        asyncio.ensure_future(self.start_connect_(), loop=self.loop)
 
-    async def startConnect_(self):
-
-        macAddr = self.scanTable.item(self.scanTable.currentRow(), 0).text()
-        client = BleakClient(macAddr)
+    async def start_connect_(self):
+        print('ROW: ' + str(self.scanTable.current_row()))
+        mac_addr = self.scanTable.item(0, 0).text()
+        print(mac_addr)
+        client = BleakClient(mac_addr)
         try:
             await client.connect()
             self.scanProgressBar.setValue(100)
@@ -353,21 +333,20 @@ class Ui(QtWidgets.QMainWindow):
                         GuiTags.WGS_CONFIG_UUID = c.uuid
                     if c.handle == 25:
                         GuiTags.WGS_DATA_UUID = c.uuid
-
-            self.setConnectionStatusConnected(client)
+            self.set_connection_status_connected(client)
         except Exception as e:
-            self.setConnectionStatusDisconnected()
+            self.set_connection_status_disconnected()
             self.scanProgressBar.setValue(0)
 
-    def setConnectionStatusConnected(self, client):
+    def set_connection_status_connected(self, client):
         self.bleDevice.client = client
         self.bleDevice.connected = True
         self.connectionLabel.setText("Connected")
         self.connectionLabel.setStyleSheet('color: green')
-        if (self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_DATA).isChecked()):
-            asyncio.ensure_future(self.waitForData(), loop=self.loop)
+        if self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_DATA).isChecked():
+            asyncio.ensure_future(self.wait_for_data(), loop=self.loop)
 
-    def setConnectionStatusDisconnected(self):
+    def set_connection_status_disconnected(self):
         self.bleDevice.client = None
         self.bleDevice.connected = False
         self.connectionLabel.setText("Disconnected")
@@ -385,9 +364,9 @@ class Ui(QtWidgets.QMainWindow):
                                                Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])))
         # print(int_values, " | ",new_row )
 
-        self.eggDataTable.addRowInToTable(new_row)
+        self.eggDataTable.add_row_into_table(new_row)
 
-    async def waitForData(self):
+    async def wait_for_data(self):
         await self.bleDevice.client.start_notify(GuiTags.WGS_DATA_UUID, self.notification_handler)
         await asyncio.sleep(5.0)
         await self.bleDevice.stop_notify(GuiTags.WGS_DATA_UUID)

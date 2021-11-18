@@ -3,6 +3,7 @@ pip install asyncqt
 pip install bleak
 pip install paho-mqtt
 PyQt5~=5.15.4
-qasync~=0.22.0
-bleak~=0.13.0
+asyncqt~=0.8.0
 paho-mqtt~=1.6.1
+bleak~=0.13.0
+

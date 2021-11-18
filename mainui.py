@@ -431,6 +431,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(2)
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -474,6 +475,7 @@ class Ui_MainWindow(object):
         self.configProgramButtonMeasureInterval.setText(_translate("MainWindow", "Program"))
         self.configProgramButtonReset.setText(_translate("MainWindow", "Reset"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.configNodeTab), _translate("MainWindow", "Config Node"))
+
         self.exportToCsvButton.setText(_translate("MainWindow", "Export Data"))
         self.cleanEggDataTableButton.setText(_translate("MainWindow", "Clean Data"))
         self.publishEggDataTableButton.setText(_translate("MainWindow", "Publish Data via MQTT"))
@@ -498,9 +500,10 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Value"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "BLE Advertising Parser"))
         self.disconnectButton.setText(_translate("MainWindow", "Disconnect"))
-        #self.connectionLabel.setText(_translate("MainWindow", "Connection Status Sensor: "))
+
+        self.connectionLabel.setText(_translate("MainWindow", "Connection Status Sensor: "))
         self.connectionStatusLabel.setToolTip(_translate("MainWindow", "<html><head/><body><p>ss</p></body></html>"))
-        #self.connectionStatusLabel.setWhatsThis(_translate("MainWindow", "<html><head/><body><p>Connection Status</p></body></html>"))
+        self.connectionStatusLabel.setWhatsThis(_translate("MainWindow", "<html><head/><body><p>Connection Status</p></body></html>"))
         self.connectionStatusLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#aa0000;\">Not Connected</span></p></body></html>"))
         self.labelConnectionMQTT.setText(_translate("MainWindow", "Connection MQTT: Not Connected"))
         self.menuDatei.setTitle(_translate("MainWindow", "Datei"))
