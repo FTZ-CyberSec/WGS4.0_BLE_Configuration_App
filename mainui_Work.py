@@ -106,10 +106,6 @@ class Ui(QtWidgets.QMainWindow):
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
 
-        self.cleanScanTableButton = self.findChild(
-            QtWidgets.QPushButton, 'cleanScanTableButton')
-        self.cleanScanTableButton.clicked.connect(self.scanTable.clean_table)
-
         self.connectionLabel = self.findChild(
             QtWidgets.QLabel, GuiTags.CONNECTION_STATUS_LABEL)
 
@@ -261,8 +257,10 @@ class Ui(QtWidgets.QMainWindow):
 
     def start_scan(self):
         self.ScanButtonPressed = True
+        self.scanTable.clean_table()
         if self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_JUST_SCAN).isChecked():
             asyncio.ensure_future(self.scan_and_parse(), loop=self.loop)
+
         else:
             asyncio.ensure_future(self.progress_bar(), loop=self.loop)
             asyncio.ensure_future(self.start_ble_scan(), loop=self.loop)
@@ -296,7 +294,7 @@ class Ui(QtWidgets.QMainWindow):
     async def progress_bar(self):
         count = 0
         for i in range(0, 5):
-            await asyncio.sleep(int(1))
+            await asyncio.sleep(int(5))
             count += 20
 
             self.scanProgressBar.setValue(count)

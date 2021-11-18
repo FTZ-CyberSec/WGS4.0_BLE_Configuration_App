@@ -100,12 +100,6 @@ class Ui_MainWindow(object):
         self.connectButton.setStyleSheet("")
         self.connectButton.setObjectName("connectButton")
         self.verticalLayout.addWidget(self.connectButton)
-        self.cleanScanTableButton = QtWidgets.QPushButton(self.connectionTab)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.cleanScanTableButton.setFont(font)
-        self.cleanScanTableButton.setObjectName("cleanScanTableButton")
-        self.verticalLayout.addWidget(self.cleanScanTableButton)
         self.gridLayout_3.addLayout(self.verticalLayout, 4, 2, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout_3, 0, 0, 1, 1)
         self.tabWidget.addTab(self.connectionTab, "")
@@ -418,7 +412,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuSchnittstellen.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -436,7 +430,6 @@ class Ui_MainWindow(object):
         self.choiceConnectionData.setText(_translate("MainWindow", "Connect for Data"))
         self.scanButton.setText(_translate("MainWindow", "Scan"))
         self.connectButton.setText(_translate("MainWindow", "Connect"))
-        self.cleanScanTableButton.setText(_translate("MainWindow", "Clean Table"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.connectionTab), _translate("MainWindow", "Connect"))
         self.label_3.setText(_translate("MainWindow", "Measure Interval (s)"))
         self.configProgramButtonMeasureInterval.setText(_translate("MainWindow", "Program"))
