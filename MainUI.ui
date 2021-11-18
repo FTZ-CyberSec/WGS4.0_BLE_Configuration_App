@@ -32,10 +32,10 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>30</y>
-      <width>1035</width>
-      <height>765</height>
+      <x>90</x>
+      <y>10</y>
+      <width>1021</width>
+      <height>801</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -209,7 +209,7 @@
       <string>Config Node</string>
      </attribute>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="4" column="0">
+      <item row="5" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="label_8">
@@ -251,61 +251,10 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QLabel" name="label_9">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Dev EUI</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTextEdit" name="configFieldDevEUI">
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_15">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="configButtonDevEUI">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Program</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item row="2" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
           <item>
            <widget class="QLabel" name="label_4">
             <property name="minimumSize">
@@ -360,7 +309,7 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -437,7 +386,7 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -490,7 +439,7 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label_7">
@@ -520,7 +469,73 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0">
+      <item row="8" column="0">
+       <widget class="QPushButton" name="configProgramButtonReset">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Dev EUI</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="configFieldDevEUI">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_15">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="configButtonDevEUI">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Program</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -582,21 +597,6 @@
         </item>
        </layout>
       </item>
-      <item row="7" column="0">
-       <widget class="QPushButton" name="configProgramButtonReset">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Reset</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QWidget" name="tab">
@@ -606,10 +606,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>11</x>
-        <y>11</y>
-        <width>1011</width>
-        <height>721</height>
+        <x>30</x>
+        <y>10</y>
+        <width>981</width>
+        <height>761</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -620,13 +620,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="cleanEggDataTableButton">
-         <property name="text">
-          <string>Clean Data</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="2">
         <widget class="QPushButton" name="publishEggDataTableButton">
          <property name="text">
@@ -634,7 +627,14 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="2" column="1">
+        <widget class="QPushButton" name="cleanEggDataTableButton">
+         <property name="text">
+          <string>Clean Data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
         <widget class="QTableWidget" name="eggDataTable">
          <column>
           <property name="text">
@@ -743,7 +743,7 @@
    <widget class="QLabel" name="connectionStatusLabel">
     <property name="geometry">
      <rect>
-      <x>1050</x>
+      <x>1120</x>
       <y>10</y>
       <width>351</width>
       <height>50</height>
@@ -769,9 +769,9 @@
    <widget class="QLabel" name="labelConnectionMQTT">
     <property name="geometry">
      <rect>
-      <x>1215</x>
-      <y>840</y>
-      <width>171</width>
+      <x>1160</x>
+      <y>800</y>
+      <width>211</width>
       <height>20</height>
      </rect>
     </property>

@@ -31,6 +31,10 @@ import csv
 
 class MyTable(object):
     def __init__(self, windowObject, objectName):
+        """
+        ___init___ method which will run whatever we create as instance of our window
+
+        """
         self.table = windowObject.findChild(QtWidgets.QTableWidget, objectName)
         self.tableRowCount = 0
         self.windowObject = windowObject
@@ -48,19 +52,19 @@ class MyTable(object):
 
     def addRowInToTable(self, elem):
         self.tableRowCount += 1
-        self.updateRowCount()
+        self._updateRowCount()
         column = 0
         for e in elem:
             self.table.setItem(self.tableRowCount - 1, column,
                                QtWidgets.QTableWidgetItem(str(e)))
             column += 1
 
-    def updateRowCount(self):
+    def _updateRowCount(self):
         self.table.setRowCount(self.tableRowCount)
 
     def cleanTable(self):
         self.tableRowCount = 0
-        self.updateRowCount()
+        self._updateRowCount()
 
     def currentRow(self):
         row = self.table.currentRow()
@@ -68,12 +72,6 @@ class MyTable(object):
 
     def item(self, x, y):
         return self.table.item(x, y)
-
-    # myFile = open('myFile.csv', 'w')
-    # with myFile:
-    # writer = csv.writer(myFile)
-    # writer.writerows(row)
-    # print(myFile)
 
 
 class BLE_Device():
@@ -177,15 +175,16 @@ class Ui(QtWidgets.QMainWindow):
         self.publishMQTTButton.clicked.connect(self.publishEggDataViaMQTT)
 
     def export_csv(self):
+        """
+        Exporting eggDataTable to CSV file "odd.csv"
+        """
         data = []
         for i in range(0, self.eggDataTable.tableRowCount):
-            row = []
-            #print(self.eggDataTable.columnCount())
-            for j in range(0, 5):
-                row.append(self.eggDataTable.item(i, j).text())
+            row = [self.eggDataTable.item(i, j).text() for j in range(0, 5)]
             data.append(row)
         with open('odd.csv', 'w+', newline='') as file:
             writer = csv.writer(file)
+            writer.writerow(['Address', 'Time', 'Sensor Type', 'Channel', 'value'])
             writer.writerows(data)
         print("CSV Created")
 
