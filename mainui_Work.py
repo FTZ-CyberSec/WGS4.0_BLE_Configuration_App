@@ -37,8 +37,6 @@ class MyTable(object):
         self.windowObject = window_object
         self.table.key_press_event = self.key_press_event
 
-
-
     def key_press_event(self, event):
         if event.key() == QtCore.Qt.Key_C and event.modifiers() & QtCore.Qt.ControlModifier:
             self.copy()
@@ -66,7 +64,7 @@ class MyTable(object):
         self.update_row_count()
 
     def current_row(self):
-        row = self.table.current_row()
+        row = self.table.currentRow()
         return row
 
     def item(self, x, y):
@@ -90,7 +88,7 @@ class Ui(QtWidgets.QMainWindow):
 
         self.loop = loop
         self.eggDataTable = MyTable(self, GuiTags.DATA_TABLE)
-        self.findChild(QtWidgets.QPushButton, GuiTags.CLEAN_DATA_TABLE_NUTTON).clicked.connect(
+        self.findChild(QtWidgets.QPushButton, GuiTags.CLEAN_DATA_TABLE_BUTTON).clicked.connect(
             self.eggDataTable.clean_table)
 
         self.scanTable = MyTable(self, GuiTags.SCAN_TABLE)
@@ -107,10 +105,6 @@ class Ui(QtWidgets.QMainWindow):
 
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
-
-        self.cleanScanTableButton = self.findChild(
-            QtWidgets.QPushButton, 'cleanScanTableButton')
-        self.cleanScanTableButton.clicked.connect(self.scanTable.clean_table)
 
         self.connectionLabel = self.findChild(
             QtWidgets.QLabel, GuiTags.CONNECTION_STATUS_LABEL)
@@ -144,15 +138,15 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY)
         # self.configAppKeyField.textChanged.connect(self.trimLoRaAppKeyInput)
 
-        self.configSensorsButton = self.findChild(
-            QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_SENSORS)
-        self.configSensorsButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.SENSOR_TYPE))
-
         self.configStartButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_START)
         self.configStartButton.clicked.connect(
             lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.START))
+
+        self.configStopButton = self.findChild(
+            QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_STOP)
+        self.configStopButton.clicked.connect(
+            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.STOP))
 
         self.configSetTimeButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_TIME)
@@ -170,7 +164,7 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
         
-     def export_csv(self):
+    def export_csv(self):
         """
         Exporting eggDataTable to CSV file "odd.csv"
         """
@@ -217,6 +211,10 @@ class Ui(QtWidgets.QMainWindow):
                 print('Start Device')
                 data = [GuiTags.BLE_CONFIG_PARAM.START.value, 0x99]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=True), loop=self.loop)
+            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.STOP:
+                print('Stop Device')
+                data = [GuiTags.BLE_CONFIG_PARAM.STOP.value, 0x10]
+                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
             elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.TIME:
                 print('Set Time Device')
                 data = convert_int_in_bytes(int(time.time()))
@@ -259,8 +257,10 @@ class Ui(QtWidgets.QMainWindow):
 
     def start_scan(self):
         self.ScanButtonPressed = True
+        self.scanTable.clean_table()
         if self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_JUST_SCAN).isChecked():
             asyncio.ensure_future(self.scan_and_parse(), loop=self.loop)
+
         else:
             asyncio.ensure_future(self.progress_bar(), loop=self.loop)
             asyncio.ensure_future(self.start_ble_scan(), loop=self.loop)
@@ -295,7 +295,7 @@ class Ui(QtWidgets.QMainWindow):
         count = 0
         for i in range(0, 5):
             await asyncio.sleep(int(5))
-            count += 19
+            count += 20
 
             self.scanProgressBar.setValue(count)
 
@@ -317,9 +317,8 @@ class Ui(QtWidgets.QMainWindow):
         asyncio.ensure_future(self.start_connect_(), loop=self.loop)
 
     async def start_connect_(self):
-        print('ROW: ' + str(self.scanTable.current_row()))
-        mac_addr = self.scanTable.item(0, 0).text()
-        print(mac_addr)
+        print("Start connect")
+        mac_addr = self.scanTable.item(self.scanTable.current_row(), 0).text()
         client = BleakClient(mac_addr)
         try:
             await client.connect()
@@ -345,6 +344,7 @@ class Ui(QtWidgets.QMainWindow):
         self.connectionLabel.setStyleSheet('color: green')
         if self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_DATA).isChecked():
             asyncio.ensure_future(self.wait_for_data(), loop=self.loop)
+
 
     def set_connection_status_disconnected(self):
         self.bleDevice.client = None
