@@ -1,18 +1,20 @@
 from enum import Enum
+
+
 class SENSOR_TYPES(Enum):
-	DIGITAL_INPUT = 0
-	TEMPERATURE = 103
+    DIGITAL_INPUT = 0
+    TEMPERATURE = 103
 
 
 class Sensor(object):
-	def __init__(self, type, valueSize):
-		self.type = type
-		self.valueSize = valueSize
-		self.name ="?"
-		self.channel = 0
+    def __init__(self, type, valueSize):
+        self.type = type
+        self.valueSize = valueSize
+        self.name = "?"
+        self.channel = 0
 
 
-Sensors = [Sensor(SENSOR_TYPES.DIGITAL_INPUT,1),Sensor(SENSOR_TYPES.TEMPERATURE,2),Sensor(SENSOR_TYPES.TEMPERATURE,2) ]
+Sensors = [Sensor(SENSOR_TYPES.DIGITAL_INPUT, 1), Sensor(SENSOR_TYPES.TEMPERATURE, 4)]
 
 
 def get_value_size(type):
@@ -20,6 +22,7 @@ def get_value_size(type):
         if s.type == type:
             return s.valueSize
     return 0
+
 
 testts = SENSOR_TYPES(103)
 testts = SENSOR_TYPES.DIGITAL_INPUT

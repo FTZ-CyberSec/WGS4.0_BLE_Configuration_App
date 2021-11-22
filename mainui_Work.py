@@ -29,7 +29,6 @@ import math
 import csv
 
 
-
 class MyTable(object):
     def __init__(self, window_object, object_name):
         self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
@@ -163,7 +162,7 @@ class Ui(QtWidgets.QMainWindow):
         self.publishMQTTButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
-        
+
     def export_csv(self):
         """
         Exporting eggDataTable to CSV file "odd.csv"
@@ -177,7 +176,7 @@ class Ui(QtWidgets.QMainWindow):
             writer.writerow(['Address', 'Time', 'Sensor Type', 'Channel', 'value'])
             writer.writerows(data)
         print("CSV Created")
-        
+
     def publish_data_via_mqtt(self):
         status_mqtt = wgs_mqtt_client.connected
         while not status_mqtt:
@@ -278,8 +277,9 @@ class Ui(QtWidgets.QMainWindow):
         for i in range(0, len(all_data)):
             if len(all_data) < i + 4:
                 break
-            if all_data[i] == GuiTags.WGS_ADV_PREAMBLE[0] and all_data[i + 1] == GuiTags.WGS_ADV_PREAMBLE[1] and all_data[
-                i + 2] == GuiTags.WGS_ADV_PREAMBLE[2] and all_data[i + 3] == GuiTags.WGS_ADV_PREAMBLE[3]:
+            if all_data[i] == GuiTags.WGS_ADV_PREAMBLE[0] and all_data[i + 1] == GuiTags.WGS_ADV_PREAMBLE[1] and \
+                    all_data[
+                        i + 2] == GuiTags.WGS_ADV_PREAMBLE[2] and all_data[i + 3] == GuiTags.WGS_ADV_PREAMBLE[3]:
 
                 for lpp in wgs_lpp_parser.parse_byte_array(all_data[i + 4:]):
                     self.scanAdvParserTable.add_row_into_table([int(time.time()), lpp.channel, lpp.name, lpp.value_f])
@@ -345,7 +345,6 @@ class Ui(QtWidgets.QMainWindow):
         if self.findChild(QtWidgets.QRadioButton, GuiTags.CONNECTION_CHOICE_DATA).isChecked():
             asyncio.ensure_future(self.wait_for_data(), loop=self.loop)
 
-
     def set_connection_status_disconnected(self):
         self.bleDevice.client = None
         self.bleDevice.connected = False
@@ -362,7 +361,7 @@ class Ui(QtWidgets.QMainWindow):
         new_row[3] = int_values[9]  # Channel
         new_row[4] = convert_bytes_in_int_lsb2(int_values[10:],
                                                Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])))
-        # print(int_values, " | ",new_row )
+        print(int_values, " | ", new_row)
 
         self.eggDataTable.add_row_into_table(new_row)
 
