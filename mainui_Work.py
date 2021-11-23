@@ -206,6 +206,10 @@ class Ui(QtWidgets.QMainWindow):
         if not self.bleDevice.connected:
             self.configButtonDevEUI.setText("Device not connected")
             self.configButtonDevEUI.adjustSize()
+            self.configProgramButtonAppKey.setText("Device not connected")
+            self.configButtonDevEUI.adjustSize()
+            self.configProgramButtonMeasureInterval.setText("Device not connected")
+            self.configButtonDevEUI.adjustSize()
 
             print("Device not connected")
         else:
