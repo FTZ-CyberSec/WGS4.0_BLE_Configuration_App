@@ -203,8 +203,10 @@ class Ui(QtWidgets.QMainWindow):
         dialog.exec_()
 
     def program_device(self, ble_config_param):
-
         if not self.bleDevice.connected:
+            self.configButtonDevEUI.setText("Device not connected")
+            self.configButtonDevEUI.adjustSize()
+
             print("Device not connected")
         else:
             if ble_config_param == GuiTags.BLE_CONFIG_PARAM.START:
@@ -300,6 +302,15 @@ class Ui(QtWidgets.QMainWindow):
             self.scanProgressBar.setValue(count)
 
     async def start_ble_scan(self):
+        """
+           calling start and stop methods on the scanner
+           The <BleakScanner> bleak.backends.scanner.BleakScanner class is used to discover Bluetooth Low Energy devices.
+           The list of objects returned by the discover method are instances of bleak.backends.
+           device.BLEDevice has name, address and rssi attributes, as well as a metadata attribute,
+           a dict with keys uuids and manufacturer_data which potentially
+           contains a list of all service UUIDs on the device and a binary string of data from the manufacturer of the device respectively.
+           return: discovering Bluetooth devices with  address, name and rssi that can be connected to
+           """
         print('Start Scan')
         scanner = BleakScanner()
         await scanner.start()
@@ -312,6 +323,7 @@ class Ui(QtWidgets.QMainWindow):
             new_row[1] = d.name
             new_row[2] = d.rssi
             self.scanTable.add_row_into_table(new_row)
+            print(d.address, "RSSI:", d.rssi, d.name, d.metadata)
 
     def start_connect(self):
         asyncio.ensure_future(self.start_connect_(), loop=self.loop)
@@ -338,6 +350,14 @@ class Ui(QtWidgets.QMainWindow):
             self.scanProgressBar.setValue(0)
 
     def set_connection_status_connected(self, client):
+        """"Connection Clients
+            changing the status to "connected" after connecting to Bluetooth Device
+
+            is_checheded():This property holds whether the button is checked.Only checkable buttons can be checked.
+             By default, the button is unchecked.
+            Check connection status between this client and the server. Returns Boolean representing
+            connection status.
+             """
         self.bleDevice.client = client
         self.bleDevice.connected = True
         self.connectionLabel.setText("Connected")
@@ -347,6 +367,8 @@ class Ui(QtWidgets.QMainWindow):
 
 
     def set_connection_status_disconnected(self):
+        """ the status of connection Buttons by default
+        """
         self.bleDevice.client = None
         self.bleDevice.connected = False
         self.connectionLabel.setText("Disconnected")
