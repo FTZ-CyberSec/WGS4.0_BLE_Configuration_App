@@ -18,6 +18,7 @@ from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 import GuiTags
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import QMessageBox
 from util import *
 import queue
 import Sensors
@@ -103,6 +104,8 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.CONNECT_BUTTON)
         self.connectButton.clicked.connect(self.start_connect)
 
+
+
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
 
@@ -163,7 +166,10 @@ class Ui(QtWidgets.QMainWindow):
         self.publishMQTTButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
-        
+
+    def clickMethod(self):
+        QMessageBox.about(self, "Title", "Device Not Connected")
+
     def export_csv(self):
         """
         Exporting eggDataTable to CSV file "odd.csv"
@@ -204,12 +210,9 @@ class Ui(QtWidgets.QMainWindow):
 
     def program_device(self, ble_config_param):
         if not self.bleDevice.connected:
-            self.configButtonDevEUI.setText("Device not connected")
-            self.configButtonDevEUI.adjustSize()
-            self.configProgramButtonAppKey.setText("Device not connected")
-            self.configButtonDevEUI.adjustSize()
-            self.configProgramButtonMeasureInterval.setText("Device not connected")
-            self.configButtonDevEUI.adjustSize()
+            self.configDevEUIButton.clicked.connect(self.clickMethod)
+            self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
+            self.configProgramButtonMeasureInterval.clicked.connect(self.clickMethod)
 
             print("Device not connected")
         else:
