@@ -45,7 +45,7 @@ class Application(Enum):
     EGG = 1
 
 
-class BLE_CONFIG_PARAM(Enum):
+class BleConfigParam(Enum):
     MEASURE_INTERVAL = 0x00
     TRANSMIT_INTERVAL = 0x01
     APP_EUI = 0x02
@@ -53,10 +53,9 @@ class BLE_CONFIG_PARAM(Enum):
     SENSOR_TYPE = 0x04
     RESET = 0x05
     START = 0x06
-    APP_TYPE = 0x07
+    STOP = 0x07
     TIME = 0x08
     DEV_EUI = 0x09
-    STOP = 0x10
 
 
 MAX_LORAWAN_KEY_LEN = 16 * 2

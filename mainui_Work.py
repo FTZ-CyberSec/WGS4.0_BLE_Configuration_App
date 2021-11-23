@@ -23,7 +23,7 @@ import queue
 import Sensors
 import time
 import wgs_lpp_parser
-from mqtt_client import wgs_mqtt_client
+from mqtt_client import *
 import mqtt_dialog
 import math
 import csv
@@ -121,17 +121,17 @@ class Ui(QtWidgets.QMainWindow):
         self.configDevEUIButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_BUTTON_DEVEUI)
         self.configDevEUIButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.DEV_EUI))
+            lambda: self.program_device(GuiTags.BleConfigParam.DEV_EUI))
 
         self.configMeasureIntervalButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_MEASURE_INTERVAL)
         self.configMeasureIntervalButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.MEASURE_INTERVAL))
+            lambda: self.program_device(GuiTags.BleConfigParam.MEASURE_INTERVAL))
 
         self.configAppKeyButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_APP_KEY)
         self.configAppKeyButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.APP_KEY))
+            lambda: self.program_device(GuiTags.BleConfigParam.APP_KEY))
 
         self.configAppKeyField = self.findChild(
             QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY)
@@ -140,17 +140,17 @@ class Ui(QtWidgets.QMainWindow):
         self.configStartButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_START)
         self.configStartButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.START))
+            lambda: self.program_device(GuiTags.BleConfigParam.START))
 
         self.configStopButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_STOP)
         self.configStopButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.STOP))
+            lambda: self.program_device(GuiTags.BleConfigParam.STOP))
 
         self.configSetTimeButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_TIME)
         self.configSetTimeButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BLE_CONFIG_PARAM.TIME))
+            lambda: self.program_device(GuiTags.BleConfigParam.TIME))
 
         """MQTT API"""
 
@@ -190,8 +190,8 @@ class Ui(QtWidgets.QMainWindow):
             row = []
             for j in range(0, 5):
                 row.append(self.eggDataTable.item(i, j).text())
-            str = wgs_mqtt_client.jsonGeneratorFromEggTableRow(row)
-            wgs_mqtt_client.publishNewData(str)
+            str = json_generator_from_egg_table_row(row)
+            wgs_mqtt_client.publish_new_data(str)
 
     def launch_mqtt_config(self):
         dialog = QtWidgets.QDialog()
@@ -206,26 +206,26 @@ class Ui(QtWidgets.QMainWindow):
         if not self.bleDevice.connected:
             print("Device not connected")
         else:
-            if ble_config_param == GuiTags.BLE_CONFIG_PARAM.START:
+            if ble_config_param == GuiTags.BleConfigParam.START:
                 print('Start Device')
-                data = [GuiTags.BLE_CONFIG_PARAM.START.value, 0x99]
+                data = [GuiTags.BleConfigParam.START.value, 0x99]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=True), loop=self.loop)
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.STOP:
+            elif ble_config_param == GuiTags.BleConfigParam.STOP:
                 print('Stop Device')
-                data = [GuiTags.BLE_CONFIG_PARAM.STOP.value, 0x10]
+                data = [GuiTags.BleConfigParam.STOP.value, 0x10]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.TIME:
+            elif ble_config_param == GuiTags.BleConfigParam.TIME:
                 print('Set Time Device')
                 data = convert_int_in_bytes(int(time.time()))
-                data.insert(0, GuiTags.BLE_CONFIG_PARAM.TIME.value)
+                data.insert(0, GuiTags.BleConfigParam.TIME.value)
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
             ######Config Application Type######
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.APP_TYPE:
+            elif ble_config_param == GuiTags.BleConfigParam.APP_TYPE:
                 print('Set Application Type')
                 data = self.configListApp.currentRow()
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
             # Config Measure Interval
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.MEASURE_INTERVAL:
+            elif ble_config_param == GuiTags.BleConfigParam.MEASURE_INTERVAL:
                 try:
                     measure_interval = int(self.findChild(
                         QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_MEASURE_INTERVAL).toPlainText())
@@ -233,22 +233,22 @@ class Ui(QtWidgets.QMainWindow):
                 except:
                     print("Illegal Input")
             # Config LoRaWAN APPKey
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.APP_KEY:
+            elif ble_config_param == GuiTags.BleConfigParam.APP_KEY:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY).toPlainText()
                 data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                 if len(data) == 16:
-                    data.insert(0, GuiTags.BLE_CONFIG_PARAM.APP_KEY.value)
+                    data.insert(0, GuiTags.BleConfigParam.APP_KEY.value)
                     asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                     print('Der App Key wurde übertragen')
                 else:
                     print('Der eingegebene App Key ist nicht zulässig')
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.SENSOR_TYPE:
+            elif ble_config_param == GuiTags.BleConfigParam.SENSOR_TYPE:
                 pass
-            elif ble_config_param == GuiTags.BLE_CONFIG_PARAM.DEV_EUI:
+            elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
                 data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                 if len(data) == 8:
-                    data.insert(0, GuiTags.BLE_CONFIG_PARAM.DEV_EUI.value)
+                    data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
                     asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                     print('Die Dev EUI wurde übertragen')
                 else:
@@ -294,7 +294,7 @@ class Ui(QtWidgets.QMainWindow):
     async def progress_bar(self):
         count = 0
         for i in range(0, 5):
-            await asyncio.sleep(int(5))
+            await asyncio.sleep(int(2))
             count += 20
 
             self.scanProgressBar.setValue(count)
