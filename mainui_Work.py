@@ -18,6 +18,7 @@ from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 import GuiTags
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import QMessageBox
 from util import *
 import queue
 import Sensors
@@ -30,8 +31,18 @@ import csv
 
 
 class MyTable(object):
+
+    """
+    import sys
+    import GuiTags
+    from PyQt5 import QtCore, QtGui, QtWidgets, uic
+    self variable is used to bind the instance of the class to the instance method.
+     We have to explicitly declare it as the first method argument to access the instance variables and methods.
+    The self variable gives us access to the current instance properties
+    """
     def __init__(self, window_object, object_name):
         self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
+        print(self.table)
         self.tableRowCount = 0
         self.windowObject = window_object
         self.table.key_press_event = self.key_press_event
@@ -81,6 +92,9 @@ class BleDevice:
 
 
 class Ui(QtWidgets.QMainWindow):
+    '''
+    put all the stuff that we want in our table
+    Button presses and modifying elements that we have already put on to the table'''
     def __init__(self, loop):
         super(Ui, self).__init__()
         uic.loadUi("MainUI.ui", self)
@@ -101,6 +115,8 @@ class Ui(QtWidgets.QMainWindow):
         self.connectButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONNECT_BUTTON)
         self.connectButton.clicked.connect(self.start_connect)
+
+
 
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
@@ -163,6 +179,10 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
+
+    def clickMethod(self):
+        QMessageBox.about(self, "Title", "Device Not Connected")
+
     def export_csv(self):
         """
         Exporting eggDataTable to CSV file "odd.csv"
@@ -202,8 +222,11 @@ class Ui(QtWidgets.QMainWindow):
         dialog.exec_()
 
     def program_device(self, ble_config_param):
-
         if not self.bleDevice.connected:
+            self.configDevEUIButton.clicked.connect(self.clickMethod)
+            self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
+            self.configProgramButtonMeasureInterval.clicked.connect(self.clickMethod)
+
             print("Device not connected")
         else:
             if ble_config_param == GuiTags.BleConfigParam.START:
@@ -300,6 +323,15 @@ class Ui(QtWidgets.QMainWindow):
             self.scanProgressBar.setValue(count)
 
     async def start_ble_scan(self):
+        """
+           calling start and stop methods on the scanner
+           The <BleakScanner> bleak.backends.scanner.BleakScanner class is used to discover Bluetooth Low Energy devices.
+           The list of objects returned by the discover method are instances of bleak.backends.
+           device.BLEDevice has name, address and rssi attributes, as well as a metadata attribute,
+           a dict with keys uuids and manufacturer_data which potentially
+           contains a list of all service UUIDs on the device and a binary string of data from the manufacturer of the device respectively.
+           return: discovering Bluetooth devices with  address, name and rssi that can be connected to
+           """
         print('Start Scan')
         scanner = BleakScanner()
         await scanner.start()
@@ -312,6 +344,7 @@ class Ui(QtWidgets.QMainWindow):
             new_row[1] = d.name
             new_row[2] = d.rssi
             self.scanTable.add_row_into_table(new_row)
+            print(d.address, "RSSI:", d.rssi, d.name, d.metadata)
 
     def start_connect(self):
         asyncio.ensure_future(self.start_connect_(), loop=self.loop)
@@ -338,6 +371,14 @@ class Ui(QtWidgets.QMainWindow):
             self.scanProgressBar.setValue(0)
 
     def set_connection_status_connected(self, client):
+        """"Connection Clients
+            changing the status to "connected" after connecting to Bluetooth Device
+
+            is_checheded():This property holds whether the button is checked.Only checkable buttons can be checked.
+             By default, the button is unchecked.
+            Check connection status between this client and the server. Returns Boolean representing
+            connection status.
+             """
         self.bleDevice.client = client
         self.bleDevice.connected = True
         self.connectionLabel.setText("Connected")
@@ -346,6 +387,8 @@ class Ui(QtWidgets.QMainWindow):
             asyncio.ensure_future(self.wait_for_data(), loop=self.loop)
 
     def set_connection_status_disconnected(self):
+        """ the status of connection Buttons by default
+        """
         self.bleDevice.client = None
         self.bleDevice.connected = False
         self.connectionLabel.setText("Disconnected")
@@ -372,6 +415,9 @@ class Ui(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
+    '''app:giving some kind of config set up 
+    Every PyQt5 application must create an application object. 
+    The sys.argv parameter is a list of arguments from a command line.'''
     app = QtWidgets.QApplication(sys.argv)
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
