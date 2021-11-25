@@ -32,8 +32,18 @@ import csv
 
 
 class MyTable(object):
+
+    """
+    import sys
+    import GuiTags
+    from PyQt5 import QtCore, QtGui, QtWidgets, uic
+    self variable is used to bind the instance of the class to the instance method.
+     We have to explicitly declare it as the first method argument to access the instance variables and methods.
+    The self variable gives us access to the current instance properties
+    """
     def __init__(self, window_object, object_name):
         self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
+        print(self.table)
         self.tableRowCount = 0
         self.windowObject = window_object
         self.table.key_press_event = self.key_press_event
@@ -83,6 +93,9 @@ class BleDevice:
 
 
 class Ui(QtWidgets.QMainWindow):
+    '''
+    put all the stuff that we want in our table
+    Button presses and modifying elements that we have already put on to the table'''
     def __init__(self, loop):
         super(Ui, self).__init__()
         uic.loadUi("MainUI.ui", self)
@@ -402,6 +415,9 @@ class Ui(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
+    '''app:giving some kind of config set up 
+    Every PyQt5 application must create an application object. 
+    The sys.argv parameter is a list of arguments from a command line.'''
     app = QtWidgets.QApplication(sys.argv)
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
