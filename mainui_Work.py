@@ -39,10 +39,10 @@ class MyTable(object):
     self variable is used to bind the instance of the class to the instance method.
      We have to explicitly declare it as the first method argument to access the instance variables and methods.
     The self variable gives us access to the current instance properties
+     provide standard table display facilities for applications.
     """
     def __init__(self, window_object, object_name):
         self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
-        print(self.table)
         self.tableRowCount = 0
         self.windowObject = window_object
         self.table.key_press_event = self.key_press_event
@@ -56,7 +56,6 @@ class MyTable(object):
         for item in items:
             QtWidgets.QApplication.clipboard().clear()
             QtWidgets.QApplication.clipboard().setMimeData(item.text)
-
     def add_row_into_table(self, elem):
         self.tableRowCount += 1
         self.update_row_count()
@@ -344,7 +343,6 @@ class Ui(QtWidgets.QMainWindow):
             new_row[1] = d.name
             new_row[2] = d.rssi
             self.scanTable.add_row_into_table(new_row)
-            print(d.address, "RSSI:", d.rssi, d.name, d.metadata)
 
     def start_connect(self):
         asyncio.ensure_future(self.start_connect_(), loop=self.loop)
