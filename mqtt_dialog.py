@@ -9,7 +9,7 @@
 ################################################################################
 
 import GuiTags
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5 import QtCore, QtWidgets, uic
 from mqtt_client import wgs_mqtt_client
 """
 class Ui_Dialog(object):
@@ -97,8 +97,8 @@ class Ui_mqttConfig(object):
         user = self.configFieldMQTTUser.toPlainText()
         sever = self.configFieldMQTTServer.toPlainText()
         port = int(self.configFieldMQTTPort.toPlainText())
-        wgs_mqtt_client.changeUser(user, password)
-        wgs_mqtt_client.changeServer(sever, port)
+        wgs_mqtt_client.change_user(user, password)
+        wgs_mqtt_client.change_server(sever, port)
         wgs_mqtt_client.run()
         #wgs_mqtt_client.publishNewData("Hallo Welt")
         mqttStatusText = ""
