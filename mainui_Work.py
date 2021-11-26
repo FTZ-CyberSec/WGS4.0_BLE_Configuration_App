@@ -31,7 +31,6 @@ import csv
 
 
 class MyTable(object):
-
     """
     import sys
     import GuiTags
@@ -41,6 +40,7 @@ class MyTable(object):
     The self variable gives us access to the current instance properties
      provide standard table display facilities for applications.
     """
+
     def __init__(self, window_object, object_name):
         self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
         self.tableRowCount = 0
@@ -56,6 +56,7 @@ class MyTable(object):
         for item in items:
             QtWidgets.QApplication.clipboard().clear()
             QtWidgets.QApplication.clipboard().setMimeData(item.text)
+
     def add_row_into_table(self, elem):
         self.tableRowCount += 1
         self.update_row_count()
@@ -94,6 +95,7 @@ class Ui(QtWidgets.QMainWindow):
     '''
     put all the stuff that we want in our table
     Button presses and modifying elements that we have already put on to the table'''
+
     def __init__(self, loop):
         super(Ui, self).__init__()
         uic.loadUi("MainUI.ui", self)
@@ -114,8 +116,6 @@ class Ui(QtWidgets.QMainWindow):
         self.connectButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONNECT_BUTTON)
         self.connectButton.clicked.connect(self.start_connect)
-
-
 
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
@@ -178,6 +178,12 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
+    def is_hex(self):
+        try:
+            int(self, 16)
+        except ValueError:
+            return False
+        return len(self) == 16
 
     def clickMethod(self):
         QMessageBox.about(self, "Title", "Device Not Connected")
@@ -269,7 +275,8 @@ class Ui(QtWidgets.QMainWindow):
             elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
                 data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
-                if len(data) == 8:
+                self.is_hex(data)
+                if self.is_hex() == True:
                     data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
                     asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                     print('Die Dev EUI wurde übertragen')
