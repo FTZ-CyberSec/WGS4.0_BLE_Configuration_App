@@ -178,12 +178,20 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
-    def is_hex(self):
-        try:
-            int(self, 16)
-        except ValueError:
-            return False
-        return len(self) == 16
+    def check_hex(self):
+
+        # Iterate over string
+        for ch in self:
+
+            # Check if the character
+            # is invalid
+            if ((ch < '0' or ch > '9') and
+                    (ch < 'A' or ch > 'F')):
+                '''print("the number is not hex")'''
+                return
+        # Print true if all
+        # characters are valid
+        '''print("the number is hex")'''
 
     def clickMethod(self):
         QMessageBox.about(self, "Title", "Device Not Connected")
@@ -275,8 +283,8 @@ class Ui(QtWidgets.QMainWindow):
             elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
                 data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
-                self.is_hex(data)
-                if self.is_hex() == True:
+                if len(data) == 16:
+                    self.check_hex(data):
                     data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
                     asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                     print('Die Dev EUI wurde übertragen')
