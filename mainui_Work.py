@@ -91,6 +91,14 @@ class BleDevice:
         self.client = None
 
 
+def is_hex(s):
+    try:
+        int(s, 16)
+        return True
+    except ValueError:
+        return False
+
+
 class Ui(QtWidgets.QMainWindow):
     '''
     put all the stuff that we want in our table
@@ -177,22 +185,6 @@ class Ui(QtWidgets.QMainWindow):
         self.publishMQTTButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
-
-    def check_hex(self, data):
-        # Iterate over string
-        for ch in data:
-            # Check if the character
-            # is invalid
-            ch = str(data)
-            if ((ch < '0' or ch > '9') and
-                    (ch < 'A' or ch > 'F')):
-                '''print("the number is not hex")'''
-                return False
-            else:
-                return True
-        # Print true if all
-        # characters are valid
-        '''print("the number is hex")'''
 
 
     def clickMethod(self):
@@ -281,9 +273,8 @@ class Ui(QtWidgets.QMainWindow):
                 pass
             elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
-                print(rawdata)
                 if len(rawdata) == 16:
-                    if self.check_hex(rawdata):
+                    if is_hex(rawdata):
                         data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                         data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
                         asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
