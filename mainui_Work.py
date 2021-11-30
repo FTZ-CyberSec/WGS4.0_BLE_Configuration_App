@@ -178,20 +178,22 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
-    def check_hex(self):
-
+    def check_hex(self, data):
         # Iterate over string
-        for ch in self:
-
+        for ch in data:
             # Check if the character
             # is invalid
+            ch = str(data)
             if ((ch < '0' or ch > '9') and
                     (ch < 'A' or ch > 'F')):
                 '''print("the number is not hex")'''
-                return
+                return False
+            else:
+                return True
         # Print true if all
         # characters are valid
         '''print("the number is hex")'''
+
 
     def clickMethod(self):
         QMessageBox.about(self, "Title", "Device Not Connected")
@@ -256,10 +258,7 @@ class Ui(QtWidgets.QMainWindow):
                 data.insert(0, GuiTags.BleConfigParam.TIME.value)
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
             ######Config Application Type######
-            elif ble_config_param == GuiTags.BleConfigParam.APP_TYPE:
-                print('Set Application Type')
-                data = self.configListApp.currentRow()
-                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
+
             # Config Measure Interval
             elif ble_config_param == GuiTags.BleConfigParam.MEASURE_INTERVAL:
                 try:
@@ -282,14 +281,17 @@ class Ui(QtWidgets.QMainWindow):
                 pass
             elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
-                data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
-                if len(data) == 16:
-                    self.check_hex(data):
-                    data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
-                    asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
-                    print('Die Dev EUI wurde übertragen')
+                print(rawdata)
+                if len(rawdata) == 16:
+                    if self.check_hex(rawdata):
+                        data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
+                        data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
+                        asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
+                        print('Die Dev EUI wurde übertragen')
+                    else:
+                        print("ist nicht hex")
                 else:
-                    print('Die eingegebene EUI ist nicht zulässig')
+                    print('Die eingegebene EUI hat nicht richtige Länge')
 
     def start_scan(self):
         self.ScanButtonPressed = True
