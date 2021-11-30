@@ -187,9 +187,6 @@ class Ui(QtWidgets.QMainWindow):
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
 
-    def clickMethod(self):
-        QMessageBox.about(self, "Title", "Device Not Connected")
-
     def export_csv(self):
         """
         Exporting eggDataTable to CSV file "odd.csv"
@@ -262,13 +259,19 @@ class Ui(QtWidgets.QMainWindow):
             # Config LoRaWAN APPKey
             elif ble_config_param == GuiTags.BleConfigParam.APP_KEY:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY).toPlainText()
-                data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
-                if len(data) == 16:
-                    data.insert(0, GuiTags.BleConfigParam.APP_KEY.value)
-                    asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
-                    print('Der App Key wurde übertragen')
+                if len(rawdata) == 32:
+                    if is_hex(rawdata):
+                        data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
+                        data.insert(0, GuiTags.BleConfigParam.APP_KEY.value)
+                        asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
+                        print('Der App Key wurde übertragen')
+                    else:
+                        self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
+                        print('Der eingegebene App Key ist nicht hex')
                 else:
-                    print('Der eingegebene App Key ist nicht zulässig')
+                    self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
+                    print('Die eingegebene EUI hat nicht richtige Länge')
+
             elif ble_config_param == GuiTags.BleConfigParam.SENSOR_TYPE:
                 pass
             elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
@@ -280,9 +283,18 @@ class Ui(QtWidgets.QMainWindow):
                         asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                         print('Die Dev EUI wurde übertragen')
                     else:
+                        self.configDevEUIButton.clicked.connect(self.clickMethod)
                         print("ist nicht hex")
                 else:
+                    self.configDevEUIButton.clicked.connect(self.clickMethod)
                     print('Die eingegebene EUI hat nicht richtige Länge')
+
+    def clickMethod(self):
+        if self.bleDevice.connected:
+            QMessageBox.about(self, "Warning", "the number is not hex or not enough long")
+        else:
+            QMessageBox.about(self, "Warning", "Device is not Connected")
+
 
     def start_scan(self):
         self.ScanButtonPressed = True
