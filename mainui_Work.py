@@ -18,6 +18,7 @@ from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 import GuiTags
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtWidgets import QMessageBox
 from util import *
 import queue
@@ -170,11 +171,6 @@ class Ui(QtWidgets.QMainWindow):
         self.configStopButton.clicked.connect(
             lambda: self.program_device(GuiTags.BleConfigParam.STOP))
 
-        self.configSetTimeButton = self.findChild(
-            QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_TIME)
-        self.configSetTimeButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BleConfigParam.TIME))
-
         """MQTT API"""
 
         self.configMQTTConfigMenuInterface = self.findChild(
@@ -234,6 +230,10 @@ class Ui(QtWidgets.QMainWindow):
             print("Device not connected")
         else:
             if ble_config_param == GuiTags.BleConfigParam.START:
+                data = convert_int_in_bytes(int(time.time()))
+                data.insert(0, GuiTags.BleConfigParam.TIME.value)
+                print("Set time")
+                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
                 print('Start Device')
                 data = [GuiTags.BleConfigParam.START.value, 0x99]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=True), loop=self.loop)
@@ -241,11 +241,7 @@ class Ui(QtWidgets.QMainWindow):
                 print('Stop Device')
                 data = [GuiTags.BleConfigParam.STOP.value, 0x10]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
-            elif ble_config_param == GuiTags.BleConfigParam.TIME:
-                print('Set Time Device')
-                data = convert_int_in_bytes(int(time.time()))
-                data.insert(0, GuiTags.BleConfigParam.TIME.value)
-                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
+
             ######Config Application Type######
 
             # Config Measure Interval
@@ -255,7 +251,8 @@ class Ui(QtWidgets.QMainWindow):
                         QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_MEASURE_INTERVAL).toPlainText())
                     print("Measure Intervall", measure_interval)
                 except:
-                    print("Illegal Input")
+                    """"return:Error: entering non-integer data such as Alphabet, mathematical operators and...  """
+                    QMessageBox.about(self, "ERROR", "illegal input")
             # Config LoRaWAN APPKey
             elif ble_config_param == GuiTags.BleConfigParam.APP_KEY:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY).toPlainText()
@@ -266,11 +263,11 @@ class Ui(QtWidgets.QMainWindow):
                         asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                         print('Der App Key wurde übertragen')
                     else:
-                        self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
-                        print('Der eingegebene App Key ist nicht hex')
+                        """"Return:Error: when the input is not hex"""
+                        QMessageBox.about(self, "Warning", "the number is not hex")
                 else:
-                    self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
-                    print('Die eingegebene EUI hat nicht richtige Länge')
+                    """"Return:Error of not being a 32 length string"""
+                    QMessageBox.about(self, "Warning", "The entered EUI has not the correct length")
 
             elif ble_config_param == GuiTags.BleConfigParam.SENSOR_TYPE:
                 pass
@@ -283,17 +280,14 @@ class Ui(QtWidgets.QMainWindow):
                         asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
                         print('Die Dev EUI wurde übertragen')
                     else:
-                        self.configDevEUIButton.clicked.connect(self.clickMethod)
-                        print("ist nicht hex")
+                        """"Return:Error warning: when the input is not hex"""
+                        QMessageBox.about(self, "Warning", "the number is not hex")
                 else:
-                    self.configDevEUIButton.clicked.connect(self.clickMethod)
-                    print('Die eingegebene EUI hat nicht richtige Länge')
+                    """"Return:Error of not being a 16 length string"""
+                    QMessageBox.about(self, "Warning", "The entered EUI has not the correct length")
 
     def clickMethod(self):
-        if self.bleDevice.connected:
-            QMessageBox.about(self, "Warning", "the number is not hex or not enough long")
-        else:
-            QMessageBox.about(self, "Warning", "Device is not Connected")
+        QMessageBox.about(self, "Warning", "Device is not Connected")
 
 
     def start_scan(self):
