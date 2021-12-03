@@ -93,6 +93,7 @@ class BleDevice:
 
 
 def is_hex(s):
+    """checking for valid hexadecimal digits"""
     try:
         int(s, 16)
         return True
@@ -182,16 +183,15 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
-
     def export_csv(self):
         """
-        Exporting eggDataTable to CSV file "odd.csv"
+        Exporting eggDataTable to CSV file "eggDataTable.csv"
         """
         data = []
         for i in range(0, self.eggDataTable.tableRowCount):
             row = [self.eggDataTable.item(i, j).text() for j in range(0, 5)]
             data.append(row)
-        with open('odd.csv', 'w+', newline='') as file:
+        with open('eggDataTable.csv', 'w+', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Address', 'Time', 'Sensor Type', 'Channel', 'value'])
             writer.writerows(data)
@@ -223,6 +223,8 @@ class Ui(QtWidgets.QMainWindow):
 
     def program_device(self, ble_config_param):
         if not self.bleDevice.connected:
+            """there is no Bluetooth connection,
+            click on this Button show the messageBox in clickMethode()function"""
             self.configDevEUIButton.clicked.connect(self.clickMethod)
             self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
             self.configProgramButtonMeasureInterval.clicked.connect(self.clickMethod)
@@ -251,7 +253,7 @@ class Ui(QtWidgets.QMainWindow):
                         QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_MEASURE_INTERVAL).toPlainText())
                     print("Measure Intervall", measure_interval)
                 except:
-                    """"return:Error: entering non-integer data such as Alphabet, mathematical operators and...  """
+                    """"return:Error: entering a non-integer data such as Alphabet, mathematical operators and...  """
                     QMessageBox.about(self, "ERROR", "illegal input")
             # Config LoRaWAN APPKey
             elif ble_config_param == GuiTags.BleConfigParam.APP_KEY:
@@ -261,13 +263,15 @@ class Ui(QtWidgets.QMainWindow):
                         data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                         data.insert(0, GuiTags.BleConfigParam.APP_KEY.value)
                         asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
-                        print('Der App Key wurde übertragen')
+                        print('The app key has been transferred')
                     else:
                         """"Return:Error: when the input is not hex"""
                         QMessageBox.about(self, "Warning", "the number is not hex")
                 else:
                     """"Return:Error of not being a 32 length string"""
-                    QMessageBox.about(self, "Warning", "The entered EUI has not the correct length")
+                    QMessageBox.about(self, "Warning", "The entered EUI has invalid length")
+                    """which one is better? 
+                    QMessageBox.information(self, "info", "Enter an 32-length number")"""
 
             elif ble_config_param == GuiTags.BleConfigParam.SENSOR_TYPE:
                 pass
@@ -278,17 +282,21 @@ class Ui(QtWidgets.QMainWindow):
                         data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
                         data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
                         asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
-                        print('Die Dev EUI wurde übertragen')
+                        print('The Dev EUI has been transferred')
                     else:
                         """"Return:Error warning: when the input is not hex"""
                         QMessageBox.about(self, "Warning", "the number is not hex")
                 else:
                     """"Return:Error of not being a 16 length string"""
-                    QMessageBox.about(self, "Warning", "The entered EUI has not the correct length")
+                    QMessageBox.about(self, "Warning", "The entered EUI has invalid length")
 
     def clickMethod(self):
-        QMessageBox.about(self, "Warning", "Device is not Connected")
-
+        """when BLEdevice is not connected.click on any of this Buttons show an Error:
+        DevEUIButton
+        ProgramButtonAppKey
+        ProgramButtonMeasureInterval
+        """
+        QMessageBox.about(self, "Error", "Device is not Connected")
 
     def start_scan(self):
         self.ScanButtonPressed = True
