@@ -18,6 +18,7 @@ from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 import GuiTags
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtWidgets import QMessageBox
 from util import *
 import queue
@@ -31,7 +32,6 @@ import csv
 
 
 class MyTable(object):
-
     """
     import sys
     import GuiTags
@@ -41,6 +41,7 @@ class MyTable(object):
     The self variable gives us access to the current instance properties
      provide standard table display facilities for applications.
     """
+
     def __init__(self, window_object, object_name):
         self.table = window_object.findChild(QtWidgets.QTableWidget, object_name)
         self.tableRowCount = 0
@@ -56,6 +57,7 @@ class MyTable(object):
         for item in items:
             QtWidgets.QApplication.clipboard().clear()
             QtWidgets.QApplication.clipboard().setMimeData(item.text)
+
     def add_row_into_table(self, elem):
         self.tableRowCount += 1
         self.update_row_count()
@@ -90,10 +92,20 @@ class BleDevice:
         self.client = None
 
 
+def is_hex(s):
+    """checking for valid hexadecimal digits"""
+    try:
+        int(s, 16)
+        return True
+    except ValueError:
+        return False
+
+
 class Ui(QtWidgets.QMainWindow):
     '''
     put all the stuff that we want in our table
     Button presses and modifying elements that we have already put on to the table'''
+
     def __init__(self, loop):
         super(Ui, self).__init__()
         uic.loadUi("MainUI.ui", self)
@@ -114,8 +126,6 @@ class Ui(QtWidgets.QMainWindow):
         self.connectButton = self.findChild(
             QtWidgets.QPushButton, GuiTags.CONNECT_BUTTON)
         self.connectButton.clicked.connect(self.start_connect)
-
-
 
         self.scanProgressBar = self.findChild(
             QtWidgets.QProgressBar, GuiTags.SCAN_PROGRESS_BAR)
@@ -162,11 +172,6 @@ class Ui(QtWidgets.QMainWindow):
         self.configStopButton.clicked.connect(
             lambda: self.program_device(GuiTags.BleConfigParam.STOP))
 
-        self.configSetTimeButton = self.findChild(
-            QtWidgets.QPushButton, GuiTags.CONFIG_PROGRAM_BUTTON_TIME)
-        self.configSetTimeButton.clicked.connect(
-            lambda: self.program_device(GuiTags.BleConfigParam.TIME))
-
         """MQTT API"""
 
         self.configMQTTConfigMenuInterface = self.findChild(
@@ -178,19 +183,15 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
-
-    def clickMethod(self):
-        QMessageBox.about(self, "Title", "Device Not Connected")
-
     def export_csv(self):
         """
-        Exporting eggDataTable to CSV file "odd.csv"
+        Exporting eggDataTable to CSV file "eggDataTable.csv"
         """
         data = []
         for i in range(0, self.eggDataTable.tableRowCount):
             row = [self.eggDataTable.item(i, j).text() for j in range(0, 5)]
             data.append(row)
-        with open('odd.csv', 'w+', newline='') as file:
+        with open('eggDataTable.csv', 'w+', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Address', 'Time', 'Sensor Type', 'Channel', 'value'])
             writer.writerows(data)
@@ -222,6 +223,8 @@ class Ui(QtWidgets.QMainWindow):
 
     def program_device(self, ble_config_param):
         if not self.bleDevice.connected:
+            """there is no Bluetooth connection,
+            click on this Button show the messageBox in clickMethode()function"""
             self.configDevEUIButton.clicked.connect(self.clickMethod)
             self.configProgramButtonAppKey.clicked.connect(self.clickMethod)
             self.configProgramButtonMeasureInterval.clicked.connect(self.clickMethod)
@@ -229,6 +232,10 @@ class Ui(QtWidgets.QMainWindow):
             print("Device not connected")
         else:
             if ble_config_param == GuiTags.BleConfigParam.START:
+                data = convert_int_in_bytes(int(time.time()))
+                data.insert(0, GuiTags.BleConfigParam.TIME.value)
+                print("Set time")
+                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
                 print('Start Device')
                 data = [GuiTags.BleConfigParam.START.value, 0x99]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=True), loop=self.loop)
@@ -236,16 +243,9 @@ class Ui(QtWidgets.QMainWindow):
                 print('Stop Device')
                 data = [GuiTags.BleConfigParam.STOP.value, 0x10]
                 asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
-            elif ble_config_param == GuiTags.BleConfigParam.TIME:
-                print('Set Time Device')
-                data = convert_int_in_bytes(int(time.time()))
-                data.insert(0, GuiTags.BleConfigParam.TIME.value)
-                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
+
             ######Config Application Type######
-            elif ble_config_param == GuiTags.BleConfigParam.APP_TYPE:
-                print('Set Application Type')
-                data = self.configListApp.currentRow()
-                asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data, disconnect=False), loop=self.loop)
+
             # Config Measure Interval
             elif ble_config_param == GuiTags.BleConfigParam.MEASURE_INTERVAL:
                 try:
@@ -253,28 +253,50 @@ class Ui(QtWidgets.QMainWindow):
                         QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_MEASURE_INTERVAL).toPlainText())
                     print("Measure Intervall", measure_interval)
                 except:
-                    print("Illegal Input")
+                    """"return:Error: entering a non-integer data such as Alphabet, mathematical operators and...  """
+                    QMessageBox.about(self, "ERROR", "illegal input")
             # Config LoRaWAN APPKey
             elif ble_config_param == GuiTags.BleConfigParam.APP_KEY:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_APP_KEY).toPlainText()
-                data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
-                if len(data) == 16:
-                    data.insert(0, GuiTags.BleConfigParam.APP_KEY.value)
-                    asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
-                    print('Der App Key wurde übertragen')
+                if len(rawdata) == 32:
+                    if is_hex(rawdata):
+                        data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
+                        data.insert(0, GuiTags.BleConfigParam.APP_KEY.value)
+                        asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
+                        print('The app key has been transferred')
+                    else:
+                        """"Return:Error: when the input is not hex"""
+                        QMessageBox.about(self, "Warning", "the number is not hex")
                 else:
-                    print('Der eingegebene App Key ist nicht zulässig')
+                    """"Return:Error of not being a 32 length string"""
+                    QMessageBox.about(self, "Warning", "The entered EUI has invalid length")
+                    """which one is better? 
+                    QMessageBox.information(self, "info", "Enter an 32-length number")"""
+
             elif ble_config_param == GuiTags.BleConfigParam.SENSOR_TYPE:
                 pass
             elif ble_config_param == GuiTags.BleConfigParam.DEV_EUI:
                 rawdata = self.findChild(QtWidgets.QTextEdit, GuiTags.CONFIG_FIELD_DEVEUI).toPlainText()
-                data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
-                if len(data) == 8:
-                    data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
-                    asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
-                    print('Die Dev EUI wurde übertragen')
+                if len(rawdata) == 16:
+                    if is_hex(rawdata):
+                        data = [int(rawdata[i:i + 2], 16) for i in range(0, len(rawdata), 2)]
+                        data.insert(0, GuiTags.BleConfigParam.DEV_EUI.value)
+                        asyncio.ensure_future(self.write_chars(GuiTags.WGS_CONFIG_UUID, data), loop=self.loop)
+                        print('The Dev EUI has been transferred')
+                    else:
+                        """"Return:Error warning: when the input is not hex"""
+                        QMessageBox.about(self, "Warning", "the number is not hex")
                 else:
-                    print('Die eingegebene EUI ist nicht zulässig')
+                    """"Return:Error of not being a 16 length string"""
+                    QMessageBox.about(self, "Warning", "The entered EUI has invalid length")
+
+    def clickMethod(self):
+        """when BLEdevice is not connected.click on any of this Buttons show an Error:
+        DevEUIButton
+        ProgramButtonAppKey
+        ProgramButtonMeasureInterval
+        """
+        QMessageBox.about(self, "Error", "Device is not Connected")
 
     def start_scan(self):
         self.ScanButtonPressed = True
