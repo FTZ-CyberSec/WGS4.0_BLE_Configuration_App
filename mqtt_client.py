@@ -1,7 +1,10 @@
-import paho.mqtt.client as mqtt
+from paho import mqtt
 import json
+from paho.mqtt import client as mqtt_client
 import datetime
 import copy
+import random
+import time
 
 false = False
 true = True
@@ -50,39 +53,48 @@ def json_generator_from_egg_table_row(rows):
     return json.dumps(data)
 
 
-class WgsMqttClient(mqtt.Client):
+class WgsMqttClient(mqtt_client):
 
-    def __init__(self, user, password, server_addr, port):
-        super().__init__(client_id="", clean_session=True, userdata=None, protocol=mqtt.MQTTv311, transport="tcp")
-        self.user = user
-        self.password = password
-        self.server_address = server_addr
-        self.port = port
-        self.connected = False
-        super().username_pw_set(username=self.user, password=self.password)
+    def __init__(self):
+        self.broker = '130.149.249.25'
+        self.port = 30777
+        self.topic = "wgs/events/raw"
+        self.client_id = f'python-mqtt-{random.randint(0, 1000)}'
+        self.username = 'sensor'
+        self.password = 'TIgk0IUvK6NE4wFI'
 
-    def run(self):
-        self.connect(self.server_address, self.port, 60)
-        self.loop_start()
+    def connect_mqtt(self):
+        def on_connect(self, client, userdata, flags, rc):
+            if rc == 0:
+                print("Connected to MQTT Broker!")
+            else:
+                print("Failed to connect, return code %d\n", rc)
 
-    def change_user(self, user, password):
-        self.user = user
-        self.password = password
-        super().username_pw_set(username=self.user, password=self.password)
+        # Set Connecting Client ID
+        self.client = mqtt_client.Client(self.client_id)
+        self.client.username_pw_set(self.username, self.password)
+        self.client.on_connect = on_connect
+        self.client.connect(self.broker, self.port)
+        return self.client
 
-    def change_server(self, serverAddr, port):
-        self.server_address = serverAddr
-        self.port = port
-
-    def on_connect(self, mqttc, obj, flags, rc):
-        print("Connected to MQTT Broker with result code " + str(rc))
-        self.connected = True
-
-    def on_disconnect(self, mqttc, obj, flags, rc):
-        self.connected = False
-
-    def publish_new_data(self, data):
-        super().publish("wgs/events/raw", data)
+    def publish(self, client, message):
+        result = client.publish(self.topic, message)
+        # result: [0, 1]
+        status = result[0]
+        if status == 0:
+            print(f"Send `{self.message}` to topic `{self.topic}`")
+        else:
+            print(f"Failed to send message to topic {self.topic}")
 
 
-wgs_mqtt_client = WgsMqttClient("sensor", "TIgk0IUvK6NE4wFI", "130.149.249.25", 30777)
+    client = connect_mqtt()
+
+    with open('data/wgs/data.json') as json_file:
+        jsonArr = json.load(json_file)
+        jsonArr = sorted(jsonArr, key=lambda k: ['timestamp'], reverse=True)
+        lastTs = jsonArr[0]['timestamp']
+        for e in jsonArr:
+            currTs = e['timestamp']
+            time.sleep(currTs - lastTs)
+            publish(client, json.dumps(e))
+            lastTs = currTs

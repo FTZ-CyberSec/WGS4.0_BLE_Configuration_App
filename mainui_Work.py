@@ -291,10 +291,10 @@ class Ui(QtWidgets.QMainWindow):
                     QMessageBox.about(self, "Warning", "The entered EUI has invalid length")
 
     def clickMethod(self):
-        """when BLEdevice is not connected.click on any of this Buttons show an Error:
-        DevEUIButton
-        ProgramButtonAppKey
-        ProgramButtonMeasureInterval
+        """when BLEdevice is not connected. Click on any of this Buttons show an Error:
+        DevEUIButton:program
+        ProgramButtonAppKey:program
+        ProgramButtonMeasureInterval:program
         """
         QMessageBox.about(self, "Error", "Device is not Connected")
 
