@@ -50,11 +50,11 @@ def json_generator_from_egg_table_row(rows):
     data["object"]["timestamp"]["value"] = timestamp
     data["dev_eui"] = dev_eui
     data["rxInfo"][0]["time"] = datetime.datetime.now().isoformat()
+    """data will be extracted and returned in the form of a string:encoding"""
     return json.dumps(data)
 
 
 class WgsMqttClient(mqtt_client):
-
     def __init__(self):
         self.broker = '130.149.249.25'
         self.port = 30777
@@ -86,10 +86,12 @@ class WgsMqttClient(mqtt_client):
         else:
             print(f"Failed to send message to topic {self.topic}")
 
-
     client = connect_mqtt()
 
+    """Opening JSON file"""
     with open('data/wgs/data.json') as json_file:
+        """read the JSON document from file 
+        returns data in the form of a Python dictionary"""
         jsonArr = json.load(json_file)
         jsonArr = sorted(jsonArr, key=lambda k: ['timestamp'], reverse=True)
         lastTs = jsonArr[0]['timestamp']

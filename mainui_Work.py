@@ -198,11 +198,11 @@ class Ui(QtWidgets.QMainWindow):
         print("CSV Created")
 
     def publish_data_via_mqtt(self):
-        status_mqtt = wgs_mqtt_client.connected
+        status_mqtt = self.wgs_mqtt_client.connected
         while not status_mqtt:
             self.launch_mqtt_config()
             time.sleep(1)
-            status_mqtt = wgs_mqtt_client.connected
+            status_mqtt = self.wgs_mqtt_client.connected
 
         self.findChild(
             QtWidgets.QLabel, GuiTags.STATUS_MQTT_LABEL).setText("Connection MQTT: Connected")
@@ -407,7 +407,7 @@ class Ui(QtWidgets.QMainWindow):
             asyncio.ensure_future(self.wait_for_data(), loop=self.loop)
 
     def set_connection_status_disconnected(self):
-        """ the status of connection Buttons by default
+        """ the status of connection Button by default and when is not connected
         """
         self.bleDevice.client = None
         self.bleDevice.connected = False
