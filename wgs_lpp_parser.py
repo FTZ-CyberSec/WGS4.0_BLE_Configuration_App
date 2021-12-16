@@ -40,8 +40,12 @@ def parse_byte_array(arr):
             if arr[i] == sensor.type and sensor.size + 1 <= len(arr) and arr[i - 1] != 0:
                 size = sensor.size
                 ret_wgs_lpp_list.append(
-                    WgsLpp(sensor.type, sensor.name, sensor.size, sensor.divisor, channel=arr[i - 1],
-                           value=convert_bytes_in_int_lsb2(arr[i + 1:], sensor.size, sizeInt=sensor.size * 8)))
+                    {
+                        "channel": int(arr[0]),
+                        "name": "",
+                        "type": int(arr[1]),
+                        "value": float()
+                    })
                 break
         i += size + 1
     return ret_wgs_lpp_list
