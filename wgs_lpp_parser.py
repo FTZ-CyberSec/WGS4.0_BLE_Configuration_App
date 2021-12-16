@@ -30,7 +30,7 @@ sensor_types = {
     155: {'size': 2, 'name': 'capacity', 'signed': False, 'divisor': 10, 'key': 'channel'},
 }
 
-
+"""
 def parse_byte_array(arr):
     ret_wgs_lpp_list = []
     i = 1
@@ -49,6 +49,32 @@ def parse_byte_array(arr):
                 break
         i += size + 1
     return ret_wgs_lpp_list
+"""
+
+def parse_byte_array(arr):
+    counter = 0
+    sensor_list = []
+
+    while counter < len(arr):
+        sensor_dict = {}
+        sensor_dict['channel'] = int(arr[counter][2:], 16)
+        counter += 1
+        mytype = sensor_types[int(arr[counter][2:], 16)]
+        counter += 1
+        val = ''
+        for i in range(mytype['size']):
+            val += arr[counter][2:]
+            counter += 1
+            print(counter)
+
+        print('val', val)
+        sensor_dict['value'] = int(val,16) / mytype['divisor']
+        sensor_dict['name'] = mytype['name']
+        sensor_list.append(sensor_dict)
+
+    return sensor_list
 
 
-test = parse_byte_array([0x76, 0x64, 0x17, 0x2, 0x0, 0x0, 0x76, 0x85, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
+test = parse_byte_array(['0x01','0x67','0x00', '0x42', '0x01','0x68','0xB4','0x01','0x02','0x01', '0x1A','0x01','0x00','0x00','0x01','0x9B','0x00','0x00','0x02',
+'0x9B','0x00','0x00','0x03','0x9B','0x00','0x00','0x04','0x9B','0x00','0x00','0x01','0x85','0x69','0x86','0x36','0x8F'])
+print(test)
