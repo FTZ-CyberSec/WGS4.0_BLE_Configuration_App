@@ -1,3 +1,5 @@
+import json
+
 from util import *
 
 sensor_types = {
@@ -68,13 +70,30 @@ def parse_byte_array(arr):
             print(counter)
 
         print('val', val)
-        sensor_dict['value'] = int(val,16) / mytype['divisor']
+        sensor_dict['value'] = int(val, 16) / mytype['divisor']
         sensor_dict['name'] = mytype['name']
         sensor_list.append(sensor_dict)
 
     return sensor_list
 
-
+test = parse_byte_array([])
 test = parse_byte_array(['0x01','0x67','0x00', '0x42', '0x01','0x68','0xB4','0x01','0x02','0x01', '0x1A','0x01','0x00','0x00','0x01','0x9B','0x00','0x00','0x02',
 '0x9B','0x00','0x00','0x03','0x9B','0x00','0x00','0x04','0x9B','0x00','0x00','0x01','0x85','0x69','0x86','0x36','0x8F'])
-print(test)
+for key in test:
+    print(key, ' ',)
+
+'''def json_from_egg_table_row(self):
+    body = []
+    for i in range(0, self.eggDataTable.tableRowCount):
+        row = [self.eggDataTable.item(i, j).text() for j in range(0, 5)]
+        x = {
+            "timestamp": int(row[1]),
+        }
+        body.append(x)
+    return json.dumps(body)
+
+
+timestamp = "json_from_egg_table_row()'''
+
+
+

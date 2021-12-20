@@ -214,7 +214,7 @@ class Ui(QtWidgets.QMainWindow):
                 }
             }
             body.append(x)
-        return  json.dumps(body)
+        return json.dumps(body)
 
 
     def launch_mqtt_config(self):
