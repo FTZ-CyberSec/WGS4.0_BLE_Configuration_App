@@ -53,19 +53,23 @@ def parse_byte_array(arr):
     return ret_wgs_lpp_list
 """
 
-def parse_byte_array(arr):
+def parse_byte_array(data):
+
+    arr = [x for x in data]
+    print("json loads:", arr)
     counter = 0
     sensor_list = []
 
     while counter < len(arr):
         sensor_dict = {}
-        sensor_dict['channel'] = int(arr[counter][2:], 16)
+        sensor_dict['channel'] = arr[counter] #int(arr[counter][2:], 16)
         counter += 1
-        mytype = sensor_types[int(arr[counter][2:], 16)]
+        mytype = sensor_types[arr[counter]]   #int(arr[counter][2:], 16)]
         counter += 1
+
         val = ''
         for i in range(mytype['size']):
-            val += arr[counter][2:]
+            val += hex(arr[counter])[2:]   #[2:]
             counter += 1
             print(counter)
 
@@ -76,24 +80,31 @@ def parse_byte_array(arr):
 
     return sensor_list
 
-test = parse_byte_array([])
-test = parse_byte_array(['0x01','0x67','0x00', '0x42', '0x01','0x68','0xB4','0x01','0x02','0x01', '0x1A','0x01','0x00','0x00','0x01','0x9B','0x00','0x00','0x02',
-'0x9B','0x00','0x00','0x03','0x9B','0x00','0x00','0x04','0x9B','0x00','0x00','0x01','0x85','0x69','0x86','0x36','0x8F'])
-for key in test:
-    print(key, ' ',)
-
-'''def json_from_egg_table_row(self):
-    body = []
-    for i in range(0, self.eggDataTable.tableRowCount):
-        row = [self.eggDataTable.item(i, j).text() for j in range(0, 5)]
-        x = {
-            "timestamp": int(row[1]),
-        }
-        body.append(x)
-    return json.dumps(body)
+# TODO: veralteter Test.Neuer Test direkt mit Int schreiben.
+#test = parse_byte_array(['0x01','0x67','0x00', '0x42', '0x01','0x68','0xB4','0x01','0x02','0x01', '0x1A','0x01','0x00','0x00','0x01','0x9B','0x00','0x00','0x02',
+#'0x9B','0x00','0x00','0x03','0x9B','0x00','0x00','0x04','0x9B','0x00','0x00','0x01','0x85','0x69','0x86','0x36','0x8F'])
+#for key in test:
+ #   print(key, ' ',)
 
 
-timestamp = "json_from_egg_table_row()'''
+def find_timestamp(sensor_list: list):
+    time_slot = [elm for elm in sensor_list if 'timestamp' in elm.keys()]
+    return time_slot['timestamp']
+
+def dictlist2rows(sensor_list: list):
+    timestamp = find_timestamp(sensor_list)
+    rows = []
+    for sensor_dict in sensor_list:
+        row = list()
+        row.append(sensor_dict['ID']) #TODO: ID
+        row.append(timestamp)
+        row.append('channel')
+        row.append('name')
+        row.append('value')
+        rows.append(row)
+
+    return rows
+
 
 
 

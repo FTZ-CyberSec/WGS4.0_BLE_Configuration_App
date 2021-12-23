@@ -15,10 +15,12 @@ import queue
 import Sensors
 import time
 import wgs_lpp_parser
-from mqtt_client import WgsMqttClient
-import mqtt_dialog
+#from mqtt_client import WgsMqttClient
+#import mqtt_dialog
 import math
 import csv
+
+
 
 
 class MyTable(object):
@@ -419,18 +421,23 @@ class Ui(QtWidgets.QMainWindow):
         self.connectionLabel.setStyleSheet('color: red')
 
     def notification_handler(self, sender, data):
+        data_dict_list = wgs_lpp_parser.parse_byte_array(data)
+        rows = wgs_lpp_parser.dictlist2rows(data_dict_list)
+
+        """
         int_values = [x for x in data]
         print(int_values)
         new_row = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        new_row[0] = convert_int_in_hex_string(int_values[0:4])
-        new_row[1] = convert_bytes_in_int_lsb2(int_values[4:], 4)
+        new_row[0] = convert_int_in_hex_string(int_values[0:4]) #Id
+        new_row[1] = convert_bytes_in_int_lsb2(int_values[4:], 4) #timestamp
         new_row[2] = int_values[8]  # Type
         new_row[3] = int_values[9]  # Channel
         new_row[4] = convert_bytes_in_int_lsb2(int_values[10:],
                                                Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])))
         print(int_values, " | ", new_row)
-
-        self.eggDataTable.add_row_into_table(new_row)
+        """
+        for row in rows:
+            self.eggDataTable.add_row_into_table(row)
 
     async def wait_for_data(self):
         await self.bleDevice.client.start_notify(GuiTags.WGS_DATA_UUID, self.notification_handler)
