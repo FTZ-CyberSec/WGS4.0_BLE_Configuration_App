@@ -400,7 +400,7 @@ class Ui(QtWidgets.QMainWindow):
         new_row[1] = convert_bytes_in_int_lsb2(int_values[4:], 4)
         new_row[2] = int_values[8]  # Type
         new_row[3] = int_values[9]  # Channel
-        new_row[4] = convert_bytes_in_int_lsb2(int_values[10:],
+        new_row[4] = convert_bytes_in_int_lsb2(int_values[12:],
                                                Sensors.get_value_size(Sensors.SENSOR_TYPES(new_row[2])))
         print(int_values, " | ", new_row)
 

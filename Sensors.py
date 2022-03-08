@@ -4,6 +4,7 @@ from enum import Enum
 class SENSOR_TYPES(Enum):
     DIGITAL_INPUT = 0
     TEMPERATURE = 103
+    ANALOG_INPUT = 2
 
 
 class Sensor(object):
@@ -14,7 +15,7 @@ class Sensor(object):
         self.channel = 0
 
 
-Sensors = [Sensor(SENSOR_TYPES.DIGITAL_INPUT, 1), Sensor(SENSOR_TYPES.TEMPERATURE, 4)]
+Sensors = [Sensor(SENSOR_TYPES.DIGITAL_INPUT, 1), Sensor(SENSOR_TYPES.TEMPERATURE, 4), Sensor(SENSOR_TYPES.ANALOG_INPUT, 4)]
 
 
 def get_value_size(type):
