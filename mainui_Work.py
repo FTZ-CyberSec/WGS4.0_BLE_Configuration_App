@@ -173,6 +173,10 @@ class Ui(QtWidgets.QMainWindow):
             QtWidgets.QPushButton, GuiTags.PUBLISH_MQTT_LABEL)
         self.publishMQTTButton.clicked.connect(self.publish_data_via_mqtt)
 
+        self.exportButton = self.findChild(
+            QtWidgets.QPushButton, GuiTags.EXPORT_TO_CSV_BUTTON)
+        self.exportButton.clicked.connect(self.export_csv)
+
     def export_csv(self):
         """
         Exporting eggDataTable to CSV file "eggDataTable.csv"
@@ -188,6 +192,8 @@ class Ui(QtWidgets.QMainWindow):
         print("CSV Created")
 
     def publish_data_via_mqtt(self):
+        #wgsmqttcl = WgsMqttClient()
+        #client = wgsmqttcl.connect_mqtt()
         client = WgsMqttClient.connect_mqtt()
         """Opening JSON file"""
         jsonArr = self.json_generator_from_egg_table_row()
