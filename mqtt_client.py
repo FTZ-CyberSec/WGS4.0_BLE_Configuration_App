@@ -2,7 +2,7 @@ from paho.mqtt import client as mqtt_client
 import random
 
 
-class WgsMqttClient(mqtt_client):
+class WgsMqttClient():
     def __init__(self):
         self.broker = '130.149.249.25'
         self.port = 30777

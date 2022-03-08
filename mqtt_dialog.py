@@ -10,7 +10,7 @@
 
 import GuiTags
 from PyQt5 import QtCore, QtWidgets, uic
-from mqtt_client import wgs_mqtt_client
+import mqtt_client
 """
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
