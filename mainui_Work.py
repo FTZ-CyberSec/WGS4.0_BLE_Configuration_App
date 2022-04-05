@@ -192,9 +192,9 @@ class Ui(QtWidgets.QMainWindow):
         print("CSV Created")
 
     def publish_data_via_mqtt(self):
-        #wgsmqttcl = WgsMqttClient()
-        #client = wgsmqttcl.connect_mqtt()
-        client = WgsMqttClient.connect_mqtt()
+        wgsmqttcl = WgsMqttClient()
+        client = wgsmqttcl.connect_mqtt()
+        #client = WgsMqttClient.connect_mqtt()
         """Opening JSON file"""
         jsonArr = self.json_generator_from_egg_table_row()
         jsonArr = sorted(jsonArr, key=lambda k: ['timestamp'], reverse=True)
